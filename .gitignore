@@ -1,0 +1,70 @@
+# =================================================================
+# Custom .gitignore for My Estahban City (Flutter)
+# =================================================================
+
+# --- OS & IDEs ---
+.DS_Store
+.history
+*.log
+*.swp
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# --- Flutter/Dart Specific ---
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+.packages
+build/
+
+# Ignore symbolication and obfuscation maps
+app.*.symbols
+app.*.map.json
+
+# --- Android Specific ---
+android/local.properties
+android/key.properties
+android/app/debug
+android/app/profile
+android/app/release
+*.jks
+*.keystore
+
+# --- iOS/macOS Specific ---
+ios/Flutter/.last_build_id
+ios/Flutter/ephemeral/
+ios/Flutter/Generated.xcconfig
+ios/Flutter/AppFrameworkInfo.plist
+macos/Flutter/ephemeral/
+*.moved-aside
+
+# --- Desktop & Web Ephemeral Files ---
+# These are generated and should not be in version control
+linux/flutter/ephemeral/
+windows/flutter/ephemeral/
+web/canvaskit/
+web/main.dart.js
+web/flutter_service_worker.js
+
+# --- Environment & Secret Files ---
+.env
+.tmp
+.env.*
+
+# --- Generated Plugin Registrants ---
+# Usually these are managed by Flutter and don't need to be tracked
+**/GeneratedPluginRegistrant.java
+**/GeneratedPluginRegistrant.h
+**/GeneratedPluginRegistrant.m
+**/GeneratedPluginRegistrant.swift
+**/generated_plugin_registrant.*
+
+# --- Miscellaneous ---
+migrate_working_dir/
+*.pyc
+*.class
