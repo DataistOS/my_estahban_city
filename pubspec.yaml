@@ -1,0 +1,76 @@
+# General Section (Metadata)
+name: my_estahban_city
+description: ~/estahban_city/my_estahban_city
+homepage: my_estahban_city
+documentation: https://wiki.dataist.ir/
+version: 1.0.0+1
+
+# Environment
+environment:
+  sdk: ^3.8.1
+
+# Dependencies
+dependencies:
+  flutter:
+    sdk: flutter
+  # Localizations
+  flutter_localizations:
+    sdk: flutter
+
+  #Ux/Ui
+  # Animation
+  rive: ^0.13.20
+  # Slider
+  carousel_slider:
+  # ShimmerEffect
+  shimmer: ^3.0.0
+  # SVG
+  flutter_svg: ^2.2.0
+  # Loading
+  loading_animation_widget: ^1.3.0
+  # Indicator
+  smooth_page_indicator: ^1.2.1
+  #Backend
+  pocketbase: ^0.23.0
+  #StateManagement
+  provider: ^6.1.5
+  #Network
+  # Network Connectivity
+  connectivity_plus: ^6.1.4
+  #Web
+  # WebPlugins
+  url_strategy: ^0.3.0
+  url_launcher: ^6.3.2
+  #Ignore
+  # Env
+  flutter_dotenv: ^5.2.1
+  #Formatting
+  # Json
+  json_annotation: ^4.9.0
+  # Intl
+  intl: ^0.20.2
+  #Persistence
+  shared_preferences: ^2.5.3
+  mobile_scanner: ^7.1.2
+  permission_handler: ^12.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: ^2.6.0
+  flutter_lints: ^5.0.0
+  json_serializable: ^6.10.0
+
+# Flutter specific configurations
+flutter:
+  uses-material-design: true
+
+  # Assets & Fonts:
+  assets:
+    - .env
+    - assets/images/
+    - assets/animations/
+  fonts:
+    - family: Vazir
+      fonts:
+        - asset: assets/fonts/vazir.ttf
