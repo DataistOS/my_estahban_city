@@ -1,11 +1,11 @@
 // lib/feat_intro/splash_screen.dart
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../feat_auth/pages/login_page.dart';
 import '../../feat_home/pages/home_page.dart';
@@ -80,17 +80,17 @@ class _SplashScreenState extends State<SplashScreen> {
               children: <Widget>[
                 _buildPage(
                   'خوش آمدید.',
-                  'اپلیکیشن شهروندی استهبان‌من در دو بخش (ویترین شهرستان استهبان) و دسترسی به (خدمات کامل شهروندی استهبان) در اختیار شما قرار می‌گیرد.',
+                  'به استهبان‌من خوش آمدید! دریچه‌ای تازه به سوی خدمات شهری؛ جایی که ویترینِ محصولاتِ بومی و راهکارهای هوشمندِ شهری، در کنار هم برای شما جمع شده است.',
                   'assets/images/onboarding1.svg',
                 ),
                 _buildPage(
-                  'وظیفه‌ ما:',
-                  'ما ملزم به مهیا کردن نهایت خدمات شهروندی با کیفیت به مردم استهبان و در اخیار قرار دادن محصولات تولیدی استهبان به مردم دنیا هستیم',
+                  'هدف و مأموریت:',
+                  'هدف ما ساده است: ارتقای کیفیت زندگی در استهبان و معرفیِ هنر و محصولاتِ باکیفیتِ شهرمان به سراسر ایران و جهان. ما اینجاییم تا فاصله میان شما و خدمات شهری را کوتاه کنیم.',
                   'assets/images/onboarding2.svg',
                 ),
                 _buildPage(
-                  'نکته:',
-                  'لطفا برای استفاده از تمام خدمات اپلیکیشن استهبان‌من, احرازهویت خودتان را کامل نمایید.',
+                  'دعوت:',
+                  'برای دسترسی به تمام امکانات و تجربه یک شهروندِ هوشمند، همین حالا با ثبت‌نام در برنامه، هویت خود را تأیید کنید و همراهِ ما باشید.',
                   'assets/images/onboarding3.svg',
                 ),
               ],
@@ -101,17 +101,16 @@ class _SplashScreenState extends State<SplashScreen> {
               left: _sidePadding,
               child: _currentPage == _numPages - 1
                   ? TextButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool('hasSeenOnboarding', true);
+
                         final authService = Provider.of<AuthService>(
                           context,
                           listen: false,
                         );
                         if (authService.currentUser != null) {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => const HomePage(),
-                            ),
-                          );
+                          Navigator.of(context).pushReplacementNamed('/home');
                         } else {
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(

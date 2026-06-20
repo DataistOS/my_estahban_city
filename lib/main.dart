@@ -1,6 +1,7 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my_estahban_city/services/auth_service.dart';
 import 'package:my_estahban_city/services/pocketbase_instance.dart';
@@ -15,34 +16,38 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializePocketBase();
 
+  final prefs = await SharedPreferences.getInstance();
+  final bool hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
         Provider(create: (_) => ProductService()),
       ],
-      child: const MyApp(),
+      child: MyApp(hasSeenOnboarding: hasSeenOnboarding),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool hasSeenOnboarding;
+
+  const MyApp({super.key, required this.hasSeenOnboarding});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'استهبان‌من',
+      title: 'استهبان‌من | همراه هوشمند شهروندان',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: '/splash',
+      initialRoute: hasSeenOnboarding ? '/home' : '/splash',
       routes: {
         '/splash': (context) => const SplashScreen(),
         '/home': (context) => const HomePage(),
         '/request-product': (context) => const RequestProductPage(),
- 
         ProductScannerPage.routeName: (context) => const ProductScannerPage(),
       },
     );
