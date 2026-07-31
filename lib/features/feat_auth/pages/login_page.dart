@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         await authService.login(
-          _nationalCodeController.text,
+          _nationalCodeController.text.trim(),
           _passwordController.text,
         );
         if (!mounted) return;

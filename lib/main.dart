@@ -7,6 +7,7 @@ import 'package:my_estahban_city/services/auth_service.dart';
 import 'package:my_estahban_city/services/pocketbase_instance.dart';
 import 'package:my_estahban_city/services/product_service.dart';
 
+import 'features/feat_auth/pages/login_page.dart';
 import 'features/feat_home/pages/home_page.dart';
 import 'features/feat_intro/pages/splash_screen.dart';
 import 'features/feat_product/pages/request_product_page.dart';
@@ -19,21 +20,26 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final bool hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
 
+  String initialRoute = '/splash';
+  if (hasSeenOnboarding) {
+    initialRoute = '/home';
+  }
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
         Provider(create: (_) => ProductService()),
       ],
-      child: MyApp(hasSeenOnboarding: hasSeenOnboarding),
+      child: MyApp(initialRoute: initialRoute),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final bool hasSeenOnboarding;
+  final String initialRoute;
 
-  const MyApp({super.key, required this.hasSeenOnboarding});
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +49,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: hasSeenOnboarding ? '/home' : '/splash',
+      initialRoute: initialRoute,
       routes: {
         '/splash': (context) => const SplashScreen(),
+        '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
         '/request-product': (context) => const RequestProductPage(),
         ProductScannerPage.routeName: (context) => const ProductScannerPage(),

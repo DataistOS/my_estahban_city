@@ -1,5 +1,3 @@
-
-
 // lib/core/widgets/product_card.dart
 
 import 'package:flutter/material.dart';
@@ -23,6 +21,8 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isAvailable = product.isAvailable && product.stock > 0;
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -36,76 +36,113 @@ class ProductCard extends StatelessWidget {
         },
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              if (product.mainImage.isNotEmpty)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: Image.network(
-                    product.mainImage,
-                    height: 120,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (product.mainImage.isNotEmpty)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: Image.network(
+                        product.mainImage,
+                        height: 120,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  const SizedBox(height: 8),
+                  Text(
+                    product.name,
+                    style: const TextStyle(
+                      fontFamily: 'Vazir',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    isAvailable
+                        ? 'قیمت: ${formatPrice(product.price)} ت'
+                        : 'وضعیت: ناموجود',
+                    style: TextStyle(
+                      fontFamily: 'Vazir',
+                      color: isAvailable ? Colors.green : Colors.red,
+                      fontWeight: isAvailable
+                          ? FontWeight.normal
+                          : FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Center(
+                    child: ElevatedButton.icon(
+                      onPressed: isAvailable
+                          ? () async {
+                              try {
+                                await cartService.addItemToCart(product.id);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'محصول به سبد خرید اضافه شد.',
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'خطا در افزودن محصول به سبد خرید.',
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF333333),
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: Colors.grey.shade400,
+                      ),
+                      icon: const Icon(Icons.add_shopping_cart),
+                      label: const Text(
+                        'افزودن',
+                        style: TextStyle(fontFamily: 'Vazir'),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              if (!isAvailable)
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      'ناموجود',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Vazir',
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
-              const SizedBox(height: 8),
-              Text(
-                product.name,
-                style: const TextStyle(
-                  fontFamily: 'Vazir',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'قیمت: ${formatPrice(product.price)} ت',
-                style: const TextStyle(
-                  fontFamily: 'Vazir',
-                  color: Colors.green,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    try {
-                      await cartService.addItemToCart(product.id);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'محصول به سبد خرید اضافه شد.',
-                            textDirection: TextDirection.rtl,
-                          ),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'خطا در افزودن محصول به سبد خرید.',
-                            textDirection: TextDirection.rtl,
-                          ),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF333333),
-                    foregroundColor: Colors.white,
-                  ),
-                  icon: const Icon(Icons.add_shopping_cart),
-                  label: const Text(
-                    'افزودن',
-                    style: TextStyle(fontFamily: 'Vazir'),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -113,4 +150,3 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
-
