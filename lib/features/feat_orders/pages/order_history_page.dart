@@ -11,7 +11,10 @@ class OrderHistoryPage extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('تاریخچه سفارشات', style: TextStyle(fontFamily: 'Vazir')),
+          title: const Text(
+            'تاریخچه سفارشات',
+            style: TextStyle(fontFamily: 'Vazir'),
+          ),
         ),
         body: const Center(
           child: Text(

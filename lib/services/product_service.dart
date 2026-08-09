@@ -10,7 +10,7 @@ class ProductService {
     try {
       final records = await pocketBaseInstance
           .collection('products')
-          .getFullList(sort: '-created');
+          .getFullList(sort: '-created', filter: 'is_available = true');
 
       return records.map((record) => ProductModel.fromRecord(record)).toList();
     } on ClientException catch (e) {
@@ -32,7 +32,11 @@ class ProductService {
     try {
       final records = await pocketBaseInstance
           .collection('products')
-          .getList(page: 1, perPage: 1, filter: 'barcode_id = "$code"');
+          .getList(
+            page: 1,
+            perPage: 1,
+            filter: 'barcode_id = "$code" && is_available = true',
+          );
 
       if (records.items.isNotEmpty) {
         return ProductModel.fromRecord(records.items.first);

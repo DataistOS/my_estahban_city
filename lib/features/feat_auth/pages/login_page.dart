@@ -8,6 +8,7 @@ import 'package:my_estahban_city/services/auth_service.dart';
 import 'package:my_estahban_city/features/feat_auth/pages/register_page.dart';
 
 import '../../feat_home/pages/home_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -250,13 +251,35 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 16),
 
                       // Register Button
-                      TextButton(
+
+                      /*
+                                            TextButton(
                         onPressed: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => const RegisterPage(),
                             ),
                           );
+                        },
+                        child: const Text(
+                          'هنوز حساب کاربری ندارید؟ ثبت‌نام کنید.',
+                          style: TextStyle(
+                            color: Color(0xFF333333),
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Vazir',
+                          ),
+                        ),
+                      ),
+                       */
+                      TextButton(
+                        onPressed: () async {
+                          final Uri url = Uri.parse('https://idna.dataist.ir');
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(
+                              url,
+                              mode: LaunchMode.externalApplication,
+                            );
+                          }
                         },
                         child: const Text(
                           'هنوز حساب کاربری ندارید؟ ثبت‌نام کنید.',

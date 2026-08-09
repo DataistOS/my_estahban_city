@@ -105,6 +105,10 @@ class _SplashScreenState extends State<SplashScreen> {
                         final prefs = await SharedPreferences.getInstance();
                         await prefs.setBool('hasSeenOnboarding', true);
 
+                        if (!mounted) return;
+                        Navigator.of(context).pushReplacementNamed('/home');
+
+                        /*
                         final authService = Provider.of<AuthService>(
                           context,
                           listen: false,
@@ -118,6 +122,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             ),
                           );
                         }
+                        */
                       },
                       style: TextButton.styleFrom(
                         foregroundColor: _primaryTextColor,
