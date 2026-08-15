@@ -42,22 +42,45 @@ class CartService {
     try {
       final record = await pb
           .collection('cart')
-          .getFirstListItem(
-            'user = "${currentUser.id}"',
-            expand: 'items.product',
-          );
+          .getFirstListItem('user = "${currentUser.id}"');
 
-      final cartItems = (record.data['items'] as List?)
-          ?.map(
-            (item) => CartItemModel.fromJson(item as Map<String, dynamic>)
-              ..product = ProductModel.fromRecord(item['expand']['product']),
-          )
-          .toList();
+      final rawItems = record.data['items'] as List?;
+      if (rawItems == null || rawItems.isEmpty) {
+        return CartModel.fromRecord(record);
+      }
+
+      final List<CartItemModel> cartItems = [];
+
+      for (var itemData in rawItems) {
+        final mapItem = itemData as Map<String, dynamic>;
+        final productId = mapItem['product_id'] ?? '';
+        final quantity = mapItem['quantity'] ?? 1;
+
+        ProductModel? productModel;
+        try {
+          if (productId.isNotEmpty) {
+            final productRecord = await pb
+                .collection('products')
+                .getOne(productId);
+            productModel = ProductModel.fromRecord(productRecord);
+          }
+        } catch (_) {
+          productModel = null;
+        }
+
+        cartItems.add(
+          CartItemModel(
+            productId: productId,
+            quantity: quantity,
+            product: productModel,
+          ),
+        );
+      }
 
       return CartModel(
         id: record.id,
         userId: record.data['user'],
-        items: cartItems ?? [],
+        items: cartItems,
         created: DateTime.parse(record.get<String>('created')),
         updated: DateTime.parse(record.get<String>('updated')),
       );

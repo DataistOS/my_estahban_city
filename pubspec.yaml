@@ -4,7 +4,7 @@ homepage: https://my.estahban.city/
 description: "MyEstahban: Your smart companion for city services"
 issue_tracker: https://github.com/DataistOS/my_estahban_city/issues
 documentation: https://dpic.dataist.ir/heuristic/_source/category/tools/myestahbancity.html
-version: 0.1.3+1
+version: 0.1.4+1
 
 # Environment
 environment:
@@ -18,11 +18,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  #Ux/Ui
+  # Ux/Ui
   # Animation
   rive: ^0.13.20
   # Slider
-  carousel_slider:
+  carousel_slider: ^5.0.0
   # ShimmerEffect
   shimmer: ^3.0.0
   # SVG
@@ -31,46 +31,62 @@ dependencies:
   loading_animation_widget: ^1.3.0
   # Indicator
   smooth_page_indicator: ^1.2.1
-  #Backend
+
+  # Backend
   pocketbase: ^0.23.0
-  #StateManagement
+
+  # StateManagement
   provider: ^6.1.5
-  #Network
+
+  # Network
   # Network Connectivity
   connectivity_plus: ^6.1.4
-  #Web
+
+  # Web
   # WebPlugins
   url_strategy: ^0.3.0
   url_launcher: ^6.3.2
-  #Ignore
+
+  # Ignore / Config
   # Env
   flutter_dotenv: ^5.2.1
-  #Formatting
+
+  # Formatting & Parsing
   # Json
   json_annotation: ^4.9.0
   # Intl
   intl: ^0.20.2
-  #Persistence
+
+  # Persistence & Hardware
+  # Local Storage
   shared_preferences: ^2.5.3
+  # Scanner
   mobile_scanner: ^7.1.2
+  # Permissions
   permission_handler: ^12.0.1
 
+# Development Dependencies (توسعه و تست)
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # Code Generation
   build_runner: ^2.6.0
+  # Linter / Code Style
   flutter_lints: ^5.0.0
+  # Json Serialization Generator
   json_serializable: ^6.10.0
 
 # Flutter specific configurations
 flutter:
   uses-material-design: true
 
-  # Assets & Fonts:
+  # Assets & Resources
   assets:
     - .env
     - assets/images/
     - assets/animations/
+
+  # Custom Fonts
   fonts:
     - family: Vazir
       fonts:
