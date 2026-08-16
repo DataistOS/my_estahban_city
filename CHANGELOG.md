@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.5] - 2026-08-16
+### Added
+- Implemented Order History pagination (10 items per page).
+- Added local order history deletion functionality (using SharedPreferences).
+- Added direct access to order history from the navigation drawer.
+### Fixed
+- Fixed `RecordModel` type error in `OrderHistoryPage`.
+- UI/UX improvements in the order history layout.
+- 
 ## [0.1.4] - 2026-08-15
 ### Bug Fixes & Improvements
 - **Cart Service**: Fixed a `NoSuchMethodError` crash caused by attempting to expand JSON cart items (`items.product`) directly in PocketBase. Replaced it with a robust mechanism to fetch product details individually using product IDs.

@@ -31,7 +31,7 @@ class AppDrawer extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.person),
                   title: const Text(
-                    'پروفایل',
+                    'پروفایل ‌من',
                     style: TextStyle(fontFamily: 'Vazir'),
                   ),
                   onTap: () {
@@ -45,7 +45,7 @@ class AppDrawer extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.history),
                   title: const Text(
-                    'تاریخچه سفارشات',
+                    'تاریخچه خرید',
                     style: TextStyle(fontFamily: 'Vazir'),
                   ),
                   onTap: () {
@@ -59,7 +59,7 @@ class AppDrawer extends StatelessWidget {
                 ListTile(
                   leading: const Icon(Icons.add_shopping_cart),
                   title: const Text(
-                    'درخواست موجود کردن محصول',
+                    'درخواست محصول',
                     style: TextStyle(fontFamily: 'Vazir'),
                   ),
                   onTap: () {
