@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.6] - 2026-08-21
+### Added
+- Integrated official app logo and assets for multi-platform branding.
+- Configured `flutter_launcher_icons` to automatically generate adaptive icons for Android, iOS, and Web.
+- Added iOS configuration to remove the alpha channel (`remove_alpha_ios: true`) to comply with App Store submission guidelines.
+### Changed
+- Updated `pubspec.yaml` with launcher icon generation rules and development dependencies.
+- Updated native icon assets across Android mipmap directories, iOS asset catalogs, and Web manifest/favicon resources.
+
 ## [0.1.5] - 2026-08-16
 ### Added
 - Implemented Order History pagination (10 items per page).
