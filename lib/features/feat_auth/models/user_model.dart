@@ -11,6 +11,7 @@ class UserModel {
   String email;
   String name;
   String? userType;
+  String? tier;
   String? phoneNumber;
   String? address;
   String? nationalCode;
@@ -27,6 +28,7 @@ class UserModel {
     required this.email,
     required this.name,
     this.userType,
+    this.tier,
     this.phoneNumber,
     this.address,
     this.nationalCode,
@@ -63,22 +65,19 @@ class UserModel {
       id: record.id,
       email: safeEmail,
       name: safeName,
-
       userType: record.get<String?>('user_type'),
+      tier: record.get<String?>('tier') ?? 'free',
+      // مقدار پیش‌فرض free
       phoneNumber: record.get<String?>('phone_number'),
       address: record.get<String?>('address'),
       nationalCode: record.get<String?>('national_code'),
-
       birthDate: parsedBirthDate,
-
       economicCode: record.get<String?>('economic_code'),
       companyRegistrationNumber: record.get<String?>(
         'company_registration_number',
       ),
       ceoName: record.get<String?>('ceo_name'),
-
       avatar: safeAvatar,
-
       created: DateTime.parse(createdString),
       updated: DateTime.parse(updatedString),
     );
@@ -86,6 +85,6 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, type: $userType)';
+    return 'UserModel(id: $id, type: $userType, tier: $tier)';
   }
 }

@@ -1,6 +1,7 @@
-// lib/features/feat_home/home_page.dart
+// lib/features/feat_home/pages/home_page.dart
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 
 import 'package:my_estahban_city/features/feat_cart/pages/cart_page.dart';
 import 'package:my_estahban_city/features/feat_product/models/product_model.dart';
@@ -8,6 +9,7 @@ import 'package:my_estahban_city/features/feat_product/pages/product_detail_page
 
 import 'package:my_estahban_city/core/widgets/add_to_cart_button.dart';
 import 'package:my_estahban_city/services/product_service.dart';
+import 'package:my_estahban_city/services/auth_service.dart';
 import 'package:my_estahban_city/core/widgets/search_widget.dart';
 
 import 'package:my_estahban_city/features/feat_home/widgets/app_drawer.dart';
@@ -26,6 +28,8 @@ class _HomePageState extends State<HomePage> {
 
   String _searchText = '';
 
+  static const String showcaseCategoryId = '540rdjqsuhu8m2s';
+
   final List<String> bannerImages = [
     'assets/images/bannerImages1.jpg',
     'assets/images/bannerImages2.jpg',
@@ -33,9 +37,19 @@ class _HomePageState extends State<HomePage> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _productsFuture = productService.getAllProducts();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final authService = Provider.of<AuthService>(context);
+    final user = authService.currentUser;
+
+    bool isFreeUser = user == null || user.tier == null || user.tier == 'free';
+
+    if (isFreeUser) {
+      _productsFuture = productService.getShowcaseProducts(showcaseCategoryId);
+    } else {
+      _productsFuture = productService.getAllProducts();
+    }
   }
 
   void _updateSearchText(String newText) {
@@ -50,17 +64,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+    final user = authService.currentUser;
+    bool isVip = user != null && user.tier != null && user.tier != 'free';
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: const Color(0xFFDDE3F1),
         appBar: AppBar(
-          title: const Text(
-            'استهبان‌من',
-            style: TextStyle(
+          title: Text(
+            isVip ? 'استهبان‌من (فروشگاه VIP)' : 'استهبان‌من (ویترین)',
+            style: const TextStyle(
               fontFamily: 'Vazir',
               color: Color(0xFF333333),
               fontWeight: FontWeight.normal,
+              fontSize: 18,
             ),
           ),
           backgroundColor: Colors.transparent,
@@ -109,12 +128,37 @@ class _HomePageState extends State<HomePage> {
                   }).toList(),
                 ),
               ),
+
+              if (!isVip)
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.amber.shade400),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.star, color: Colors.amber),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'شما در حال مشاهده ویترین هستید. برای دسترسی به تمامی خدمات و تخفیف‌های ویژه، اشتراک VIP تهیه کنید.',
+                          style: TextStyle(fontFamily: 'Vazir', fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
               SearchWidget(
                 onSearch: _updateSearchText,
                 onScanPressed: _navigateToScanner,
               ),
-              const SizedBox(height: 16),
-              const Padding(padding: EdgeInsets.symmetric(horizontal: 16.0)),
               const SizedBox(height: 16),
               FutureBuilder<List<ProductModel>>(
                 future: _productsFuture,

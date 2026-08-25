@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:my_estahban_city/features/feat_auth/pages/profile_page.dart';
 import 'package:my_estahban_city/features/feat_orders/pages/order_history_page.dart';
+import 'package:my_estahban_city/features/feat_about/pages/about_page.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -64,6 +65,21 @@ class AppDrawer extends StatelessWidget {
                   ),
                   onTap: () {
                     Navigator.of(context).pushNamed('/request-product');
+                  },
+                ),
+                // گزینه جدید درباره ما
+                ListTile(
+                  leading: const Icon(Icons.info_outline),
+                  title: const Text(
+                    'درباره ما',
+                    style: TextStyle(fontFamily: 'Vazir'),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AboutPage(),
+                      ),
+                    );
                   },
                 ),
               ],

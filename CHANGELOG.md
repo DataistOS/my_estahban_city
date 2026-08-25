@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0] - 2026-08-25
+### Features
+- **VIP & Showcase System:** Implemented tiered user subscriptions (`free`, `bronze`, `silver`, `gold`) and separated showcase products from the main store inventory based on user tier (`feat_home`, `feat_product`).
+- **About Us Page:** Added a comprehensive "About Us" section (`feat_about`) with structured company details, service descriptions, and fully interactive/clickable external links using `url_launcher`.
+- **Navigation & UI Updates:** Integrated the About Us page into the application drawer (`app_drawer.dart`) and updated user model records (`user_model.dart`, `auth_service.dart`) to properly handle subscription tiers.
+
 ## [0.1.6] - 2026-08-21
 ### Added
 - Integrated official app logo and assets for multi-platform branding.

@@ -26,6 +26,32 @@ class ProductService {
     }
   }
 
+  /// دریافت محصولات ویترین بر اساس شناسه (ID) دسته‌بندی ویترین
+  Future<List<ProductModel>> getShowcaseProducts(
+    String showcaseCategoryId,
+  ) async {
+    try {
+      final records = await pocketBaseInstance
+          .collection('products')
+          .getFullList(
+            sort: '-created',
+            filter: 'is_available = true && category = "$showcaseCategoryId"',
+          );
+
+      return records.map((record) => ProductModel.fromRecord(record)).toList();
+    } on ClientException catch (e) {
+      if (kDebugMode) {
+        print('PocketBase Client Error (Showcase): ${e.response['message']}');
+      }
+      rethrow;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Unknown Error (Showcase): $e');
+      }
+      rethrow;
+    }
+  }
+
   Future<ProductModel?> getProductByCode(String code) async {
     if (code.isEmpty) return null;
 

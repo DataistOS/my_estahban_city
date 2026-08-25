@@ -1,3 +1,4 @@
+// lib/services/auth_service.dart
 import 'package:flutter/foundation.dart';
 import 'package:pocketbase/pocketbase.dart';
 
