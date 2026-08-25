@@ -14,6 +14,7 @@ import 'package:my_estahban_city/core/widgets/search_widget.dart';
 
 import 'package:my_estahban_city/features/feat_home/widgets/app_drawer.dart';
 import 'package:my_estahban_city/features/feat_scanner/pages/product_scanner_page.dart';
+import 'package:my_estahban_city/features/feat_bottom_nav/widgets/custom_bottom_nav_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,7 +29,8 @@ class _HomePageState extends State<HomePage> {
 
   String _searchText = '';
 
-  static const String showcaseCategoryId = '540rdjqsuhu8m2s';
+  String? _selectedCategoryId = '540rdjqsuhu8m2s';
+  String _currentTitle = 'استهبان‌من (ویترین)';
 
   final List<String> bannerImages = [
     'assets/images/bannerImages1.jpg',
@@ -37,19 +39,54 @@ class _HomePageState extends State<HomePage> {
   ];
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    _loadProducts();
+  }
 
-    final authService = Provider.of<AuthService>(context);
+  void _loadProducts() {
+    final authService = Provider.of<AuthService>(context, listen: false);
     final user = authService.currentUser;
-
     bool isFreeUser = user == null || user.tier == null || user.tier == 'free';
 
-    if (isFreeUser) {
-      _productsFuture = productService.getShowcaseProducts(showcaseCategoryId);
-    } else {
-      _productsFuture = productService.getAllProducts();
+    setState(() {
+      if (isFreeUser) {
+        _selectedCategoryId = '540rdjqsuhu8m2s';
+        _currentTitle = 'استهبان‌من (ویترین)';
+        _productsFuture = productService.getShowcaseProducts('540rdjqsuhu8m2s');
+      } else if (_selectedCategoryId != null) {
+        _productsFuture = productService.getShowcaseProducts(
+          _selectedCategoryId!,
+        );
+      } else {
+        _productsFuture = productService.getAllProducts();
+      }
+    });
+  }
+
+  void _onCategorySelected(String? categoryId, String title) {
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final user = authService.currentUser;
+    bool isVip = user != null && user.tier != null && user.tier != 'free';
+
+    if (!isVip && categoryId != '540rdjqsuhu8m2s') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'برای مشاهده این دسته‌بندی، لطفا اشتراک VIP تهیه کنید.',
+            style: TextStyle(fontFamily: 'Vazir'),
+          ),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return; // جلوگیری از تغییر دسته‌بندی
     }
+
+    setState(() {
+      _selectedCategoryId = categoryId;
+      _currentTitle = 'استهبان‌من ($title)';
+    });
+    _loadProducts();
   }
 
   void _updateSearchText(String newText) {
@@ -74,7 +111,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: const Color(0xFFDDE3F1),
         appBar: AppBar(
           title: Text(
-            isVip ? 'استهبان‌من (فروشگاه VIP)' : 'استهبان‌من (ویترین)',
+            _currentTitle,
             style: const TextStyle(
               fontFamily: 'Vazir',
               color: Color(0xFF333333),
@@ -129,7 +166,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-              if (!isVip)
+              if (!isVip && _selectedCategoryId == '540rdjqsuhu8m2s')
                 Container(
                   margin: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -168,7 +205,9 @@ class _HomePageState extends State<HomePage> {
                   } else if (snapshot.hasError) {
                     return Center(child: Text('خطا: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('هیچ محصولی پیدا نشد.'));
+                    return const Center(
+                      child: Text('هیچ محصولی در این دسته‌بندی پیدا نشد.'),
+                    );
                   } else {
                     final products = snapshot.data!;
                     final filteredProducts = products.where((product) {
@@ -260,6 +299,20 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _navigateToScanner,
+          backgroundColor: Colors.blueAccent,
+          elevation: 4,
+          child: const Icon(
+            Icons.qr_code_scanner,
+            color: Colors.white,
+            size: 28,
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: CustomBottomNavBar(
+          onCategorySelected: _onCategorySelected,
         ),
       ),
     );

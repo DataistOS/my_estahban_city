@@ -17,7 +17,8 @@ class OrderHistoryPage extends StatefulWidget {
 
 class _OrderHistoryPageState extends State<OrderHistoryPage> {
   final CartService _cartService = CartService();
-  late Future<List<OrderModel>> _ordersFuture;
+
+  late Future<List<OrderModel>> _ordersFuture = _cartService.getOrders();
 
   List<String> _hiddenOrderIds = [];
   int _currentPage = 0;
@@ -32,8 +33,9 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   Future<void> _loadHiddenOrdersAndFetch() async {
     final prefs = await SharedPreferences.getInstance();
     _hiddenOrderIds = prefs.getStringList('hidden_orders') ?? [];
-    _ordersFuture = _cartService.getOrders();
-    setState(() {});
+    setState(() {
+      _ordersFuture = _cartService.getOrders();
+    });
   }
 
   Future<void> _clearLocalHistory(List<OrderModel> allOrders) async {

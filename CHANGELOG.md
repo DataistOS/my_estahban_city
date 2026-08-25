@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0] - 2026-08-25
+### Features & Improvements
+- **Bottom Navigation**: Replaced `BottomAppBar` implementation with a robust custom `Material` wrapper to prevent Scaffold geometry assertion errors on desktop/Linux platforms.
+- **Order History**: Fixed `LateInitializationError` by securely pre-initializing the orders future state before the initial widget render.
+- **Home & Layout**: Optimized home page structure and cleaned up widget rendering tree for a smoother cross-platform user experience.
+
 ## [0.2.0] - 2026-08-25
 ### Features
 - **VIP & Showcase System:** Implemented tiered user subscriptions (`free`, `bronze`, `silver`, `gold`) and separated showcase products from the main store inventory based on user tier (`feat_home`, `feat_product`).
