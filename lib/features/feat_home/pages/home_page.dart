@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.orange,
         ),
       );
-      return; // جلوگیری از تغییر دسته‌بندی
+      return;
     }
 
     setState(() {
@@ -97,6 +97,62 @@ class _HomePageState extends State<HomePage> {
 
   void _navigateToScanner() {
     Navigator.of(context).pushNamed(ProductScannerPage.routeName);
+  }
+
+  void _showCenterMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'ابزارهای سریع',
+                  style: TextStyle(
+                    fontFamily: 'Vazir',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(
+                    Icons.qr_code_scanner,
+                    color: Colors.blue,
+                  ),
+                  title: const Text(
+                    'اسکن بارکد',
+                    style: TextStyle(fontFamily: 'Vazir'),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _navigateToScanner();
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.flash_on, color: Colors.orange),
+                  title: const Text(
+                    'سایر امکانات سریع',
+                    style: TextStyle(fontFamily: 'Vazir'),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -301,7 +357,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _navigateToScanner,
+          onPressed: () => _showCenterMenu(context),
           backgroundColor: Colors.blueAccent,
           elevation: 4,
           child: const Icon(

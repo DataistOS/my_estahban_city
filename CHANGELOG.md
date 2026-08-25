@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0] - 2026-08-25
+### Fixed
+- **Navigation**: Resolved the critical `Scaffold.geometryOf() must only be accessed during the paint phase` error by refactoring `CustomBottomNavBar` layout structure.
+- **UI Rendering**: Eliminated mouse tracker assertion conflicts and layout synchronization issues associated with custom bottom app bar clipping.
+### Updated
+- **Home & Scanner**: Minor adjustments and stability improvements across home and product scanner pages.
+
 ## [0.3.0] - 2026-08-25
 ### Features & Improvements
 - **Bottom Navigation**: Replaced `BottomAppBar` implementation with a robust custom `Material` wrapper to prevent Scaffold geometry assertion errors on desktop/Linux platforms.

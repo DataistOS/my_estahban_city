@@ -5,8 +5,13 @@ import 'package:my_estahban_city/features/feat_auth/pages/profile_page.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final Function(String? categoryId, String title) onCategorySelected;
+  final VoidCallback? onCenterPressed;
 
-  const CustomBottomNavBar({super.key, required this.onCategorySelected});
+  const CustomBottomNavBar({
+    super.key,
+    required this.onCategorySelected,
+    this.onCenterPressed,
+  });
 
   static const String showcaseId = '540rdjqsuhu8m2s';
   static const String gadgetld = 'muj88q8bix947wh';
@@ -14,37 +19,41 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      elevation: 8.0,
-      child: SizedBox(
-        height: 60,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.category_outlined,
-                color: Color(0xFF333333),
-              ),
-              tooltip: 'دسته‌بندی‌ها',
-              onPressed: () {
-                _showCategoriesBottomSheet(context);
-              },
-            ),
+    return Container(
+      height: 60,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8.0,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.category_outlined, color: Color(0xFF333333)),
+            tooltip: 'دسته‌بندی‌ها',
+            onPressed: () {
+              _showCategoriesBottomSheet(context);
+            },
+          ),
 
-            const SizedBox(width: 40),
-            IconButton(
-              icon: const Icon(Icons.person_outline, color: Color(0xFF333333)),
-              tooltip: 'پروفایل من',
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
-                );
-              },
-            ),
-          ],
-        ),
+          const SizedBox(width: 48),
+
+          IconButton(
+            icon: const Icon(Icons.person_outline, color: Color(0xFF333333)),
+            tooltip: 'پروفایل من',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

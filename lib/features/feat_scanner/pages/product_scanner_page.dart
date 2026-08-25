@@ -134,6 +134,14 @@ class _ProductScannerPageState extends State<ProductScannerPage> {
                       style: TextStyle(fontFamily: 'Vazir'),
                     ),
                   ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text(
+                      'بازگشت به صفحه قبل',
+                      style: TextStyle(fontFamily: 'Vazir', color: Colors.blue),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -147,6 +155,10 @@ class _ProductScannerPageState extends State<ProductScannerPage> {
               style: TextStyle(fontFamily: 'Vazir'),
             ),
             centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
           ),
           body: Stack(
             children: [
