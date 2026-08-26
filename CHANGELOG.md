@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0] - 2026-08-26
+### Added
+- **Cart & Order History:** Added card-to-card payment guide banners with support details (card number, account name, and phone number for payment receipt submission) to both `CartPage` and `OrderHistoryPage`.
+- **UI Enhancements:** Improved layout consistency and visibility for payment instructions across shopping and order tracking flows.
+### Changed
+- Bumped project version to `0.5.0` in `VERSION` and `pubspec.yaml`.
+
 ## [0.4.0] - 2026-08-25
 ### Fixed
 - **Navigation**: Resolved the critical `Scaffold.geometryOf() must only be accessed during the paint phase` error by refactoring `CustomBottomNavBar` layout structure.

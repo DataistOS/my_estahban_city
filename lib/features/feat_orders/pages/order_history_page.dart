@@ -1,6 +1,7 @@
 // lib/features/feat_orders/pages/order_history_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // اضافه شده برای خواندن متغیرهای محیطی
 import 'package:pocketbase/pocketbase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_estahban_city/features/feat_product/models/order_model.dart';
@@ -162,11 +163,19 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             } else if (snapshot.hasError) {
               return Center(child: Text('خطا: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text(
-                  'شما تاکنون سفارشی ثبت نکرده‌اید.',
-                  style: TextStyle(fontFamily: 'Vazir', fontSize: 16),
-                ),
+              return Column(
+                children: [
+                  _buildPaymentInfoBanner(context),
+                  // نمایش بنر حتی وقتی سفارشی ثبت نشده تا کاربر راهنمایی شود
+                  const Expanded(
+                    child: Center(
+                      child: Text(
+                        'شما تاکنون سفارشی ثبت نکرده‌اید.',
+                        style: TextStyle(fontFamily: 'Vazir', fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ],
               );
             }
 
@@ -175,11 +184,18 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                 .toList();
 
             if (visibleOrders.isEmpty) {
-              return const Center(
-                child: Text(
-                  'تاریخچه سفارشات خالی است.',
-                  style: TextStyle(fontFamily: 'Vazir', fontSize: 16),
-                ),
+              return Column(
+                children: [
+                  _buildPaymentInfoBanner(context),
+                  const Expanded(
+                    child: Center(
+                      child: Text(
+                        'تاریخچه سفارشات خالی است.',
+                        style: TextStyle(fontFamily: 'Vazir', fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ],
               );
             }
 
@@ -196,10 +212,12 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
 
             return Column(
               children: [
+                // بنر راهنمای پرداخت در بالای لیست سفارشات
+                _buildPaymentInfoBanner(context),
                 Expanded(
                   child: ListView.builder(
                     itemCount: paginatedOrders.length,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemBuilder: (context, index) {
                       final order = paginatedOrders[index];
                       return _buildOrderCard(order);
@@ -242,6 +260,59 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             );
           },
         ),
+      ),
+    );
+  }
+
+  // ویجت بنر اطلاعات پرداخت کارت به کارت
+  Widget _buildPaymentInfoBanner(BuildContext context) {
+    final cardNumber =
+        dotenv.env['SUPPORT_CARD_NUMBER'] ?? '۶۱۰۴-۳۳۷۹-xxxx-xxxx';
+    final accountName =
+        dotenv.env['SUPPORT_ACCOUNT_NAME'] ?? 'شرکت آزاد اندیش داده‌ساز';
+    final phoneNumber = dotenv.env['SUPPORT_PHONE_NUMBER'] ?? '۰۹۱۲۳۴۵۶۷۸۹';
+
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.amber.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.amber.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const [
+              Icon(Icons.info_outline, color: Colors.amber, size: 20),
+              SizedBox(width: 8),
+              Text(
+                'راهنمای پرداخت و تایید سفارش',
+                style: TextStyle(
+                  fontFamily: 'Vazir',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: Colors.brown,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'شماره کارت: $cardNumber ($accountName)',
+            style: const TextStyle(fontFamily: 'Vazir', fontSize: 12),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'لطفاً پس از ثبت و تایید سفارش، شماره قبض/پیگیری را به شماره $phoneNumber پیامک کنید.',
+            style: const TextStyle(
+              fontFamily: 'Vazir',
+              fontSize: 12,
+              color: Colors.black87,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 // lib/features/feat_product/cart_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // اضافه شده برای خواندن متغیرها
 import 'package:my_estahban_city/features/feat_cart/models/cart_model.dart';
 import 'package:my_estahban_city/features/feat_product/models/product_model.dart';
 import 'package:my_estahban_city/services/cart_service.dart';
@@ -98,6 +99,7 @@ class _CartPageState extends State<CartPage> {
 
               return Column(
                 children: [
+                  _buildPaymentInfoBanner(context),
                   Expanded(
                     child: ListView.builder(
                       itemCount: cart.items.length,
@@ -119,6 +121,58 @@ class _CartPageState extends State<CartPage> {
             }
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentInfoBanner(BuildContext context) {
+    final cardNumber =
+        dotenv.env['SUPPORT_CARD_NUMBER'] ?? '۶۱۰۴-۳۳۷۹-xxxx-xxxx';
+    final accountName =
+        dotenv.env['SUPPORT_ACCOUNT_NAME'] ?? 'شرکت آزاد اندیش داده‌ساز';
+    final phoneNumber = dotenv.env['SUPPORT_PHONE_NUMBER'] ?? '۰۹۱۲۳۴۵۶۷۸۹';
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.amber.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.amber.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const [
+              Icon(Icons.info_outline, color: Colors.amber, size: 20),
+              SizedBox(width: 8),
+              Text(
+                'راهنمای پرداخت کارت به کارت',
+                style: TextStyle(
+                  fontFamily: 'Vazir',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: Colors.brown,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'شماره کارت: $cardNumber ($accountName)',
+            style: const TextStyle(fontFamily: 'Vazir', fontSize: 12),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'لطفاً پس از ثبت سفارش و تایید، شماره قبض/پیگیری را به شماره $phoneNumber پیامک کنید.',
+            style: const TextStyle(
+              fontFamily: 'Vazir',
+              fontSize: 12,
+              color: Colors.black87,
+            ),
+          ),
+        ],
       ),
     );
   }
