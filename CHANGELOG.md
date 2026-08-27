@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1] - 2026-08-27
+### Added
+- **App Drawer:** Integrated `flutter_dotenv` to dynamically load store address, contact phone, and app version from environment variables.
+### Changed
+- **UI Improvements:** Redesigned `AppDrawer` layout with modern borders, improved footer styling, and auto-closing navigation drawers for a better user experience.
+- Bumped project version to `0.5.1` in `VERSION` and `pubspec.yaml`.
+
 ## [0.5.0] - 2026-08-26
 ### Added
 - **Cart & Order History:** Added card-to-card payment guide banners with support details (card number, account name, and phone number for payment receipt submission) to both `CartPage` and `OrderHistoryPage`.

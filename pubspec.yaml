@@ -4,7 +4,7 @@ homepage: https://my.estahban.city/
 description: "MyEstahban: Your smart companion for city services"
 issue_tracker: https://github.com/DataistOS/my_estahban_city/issues
 documentation: https://dpic.dataist.ir/heuristic/_source/category/tools/myestahbancity.html
-version: 0.5.0+1
+version: 0.5.1+1
 
 # Environment
 environment:
