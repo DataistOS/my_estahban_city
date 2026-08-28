@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:my_estahban_city/services/auth_service.dart';
-import 'package:my_estahban_city/features/feat_auth/pages/register_page.dart';
 
 import '../../feat_home/pages/home_page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -112,10 +111,14 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       SizedBox(
                         height: 250,
-                        child: RiveAnimation.asset(
-                          'assets/animations/bear.riv',
-                          fit: BoxFit.contain,
-                          onInit: _onRiveInit,
+                        child: Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.identity()..scale(-1.0, 1.0),
+                          child: RiveAnimation.asset(
+                            'assets/animations/bear.riv',
+                            fit: BoxFit.contain,
+                            onInit: _onRiveInit,
+                          ),
                         ),
                       ),
                       const Text(
@@ -250,27 +253,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                       const SizedBox(height: 16),
 
-                      // Register Button
-
-                      /*
-                                            TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const RegisterPage(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          'هنوز حساب کاربری ندارید؟ ثبت‌نام کنید.',
-                          style: TextStyle(
-                            color: Color(0xFF333333),
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Vazir',
-                          ),
-                        ),
-                      ),
-                       */
                       TextButton(
                         onPressed: () async {
                           final Uri url = Uri.parse('https://idna.dataist.ir');
