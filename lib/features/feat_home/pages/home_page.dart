@@ -10,7 +10,7 @@ import 'package:my_estahban_city/features/feat_product/pages/product_detail_page
 import 'package:my_estahban_city/core/widgets/add_to_cart_button.dart';
 import 'package:my_estahban_city/services/product_service.dart';
 import 'package:my_estahban_city/services/auth_service.dart';
-import 'package:my_estahban_city/core/widgets/search_widget.dart';
+import 'package:my_estahban_city/features/feat_search/widgets/search_widget.dart';
 
 import 'package:my_estahban_city/features/feat_home/widgets/app_drawer.dart';
 import 'package:my_estahban_city/features/feat_scanner/pages/product_scanner_page.dart';

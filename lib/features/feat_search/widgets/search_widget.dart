@@ -1,9 +1,9 @@
+// lib/features/feat_search/widgets/search_widget.dart
+
+import '../services/search_history_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
-import 'package:my_estahban_city/services/search_history_service.dart';
-import '../../features/feat_scanner/pages/product_scanner_page.dart';
 
 class SearchWidget extends StatefulWidget {
   final ValueChanged<String> onSearch;
@@ -86,7 +86,6 @@ class _SearchWidgetState extends State<SearchWidget> {
               widget.onScanPressed();
             },
           ),
-          // ----------------------------------------------------------------
         ),
       ),
     );
