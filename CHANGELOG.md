@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.4] - 2026-09-09
+### Added
+* **Web Metadata:** Optimized `web/index.html` title and description tags to properly support Persian localization ("استهبان‌من | همراه هوشمند شهروندان").
+* **PWA Manifest:** Updated `web/manifest.json` app name and descriptions to match the official branding.
+### Changed
+* **Configuration:** Cleaned up and standardized comment blocks inside `pubspec.yaml`.
+* **Release:** Bumped project version to `v0.5.4+1` in `VERSION` and `pubspec.yaml`.
+
 ## [0.5.3] - 2026-09-01
 ### Added
 * **Search Module:** Implemented a feature-first modular architecture for search (`feat_search`), relocating the search widget and history service.

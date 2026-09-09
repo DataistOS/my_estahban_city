@@ -1,11 +1,11 @@
 {
-    "name": "my_estahban_city",
-    "short_name": "my_estahban_city",
+    "name": "استهبان‌من | همراه هوشمند شهروندان",
+    "short_name": "استهبان‌من",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "پلتفرم شهروندی استهبان‌من؛ مجموعه‌ای از خدمات و امکانات شهری برای شهروندان استهبان.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
