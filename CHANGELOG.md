@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.5] - 2026-09-11
+### Optimized
+* **Auth UI / Rive Animation:** Wrapped the login Rive animation (`bear.riv`) inside a `RepaintBoundary` to isolate rendering updates, eliminating UI jank and layout thrashing during text input on lower-end devices.
+### Changed
+* **Release:** Bumped project version to `v0.5.5` in `VERSION` and `pubspec.yaml`.
+
 ## [0.5.4] - 2026-09-09
 ### Added
 * **Web Metadata:** Optimized `web/index.html` title and description tags to properly support Persian localization ("استهبان‌من | همراه هوشمند شهروندان").

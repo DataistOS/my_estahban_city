@@ -1,4 +1,4 @@
-// lib/pages/login_page.dart
+// lib/features/feat_auth/pages/login_page.dart
 
 import 'package:rive/rive.dart' hide LinearGradient;
 import 'package:flutter/material.dart';
@@ -109,15 +109,17 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      SizedBox(
-                        height: 250,
-                        child: Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.identity()..scale(-1.0, 1.0),
-                          child: RiveAnimation.asset(
-                            'assets/animations/bear.riv',
-                            fit: BoxFit.contain,
-                            onInit: _onRiveInit,
+                      RepaintBoundary(
+                        child: SizedBox(
+                          height: 250,
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.identity()..scale(-1.0, 1.0),
+                            child: RiveAnimation.asset(
+                              'assets/animations/bear.riv',
+                              fit: BoxFit.contain,
+                              onInit: _onRiveInit,
+                            ),
                           ),
                         ),
                       ),
@@ -212,7 +214,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 24),
 
-                      // Error Message
                       if (authService.errorMessage != null)
                         Text(
                           authService.errorMessage!,
