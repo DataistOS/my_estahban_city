@@ -44,12 +44,12 @@ class AddToCartButton extends StatelessWidget {
         backgroundColor: const Color(0xFF333333),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 9),
       ),
-      icon: const Icon(Icons.add_shopping_cart, size: 18),
+      icon: const Icon(Icons.add_shopping_cart, size: 14),
       label: const Text(
         'افزودن',
-        style: TextStyle(fontFamily: 'Vazir', fontSize: 14),
+        style: TextStyle(fontFamily: 'Vazir', fontSize: 10),
       ),
     );
   }
