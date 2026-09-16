@@ -1,4 +1,5 @@
 // lib/features/feat_home/pages/home_page.dart
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ import 'package:my_estahban_city/features/feat_search/widgets/search_widget.dart
 import 'package:my_estahban_city/features/feat_home/widgets/app_drawer.dart';
 import 'package:my_estahban_city/features/feat_scanner/pages/product_scanner_page.dart';
 import 'package:my_estahban_city/features/feat_bottom_nav/widgets/custom_bottom_nav_bar.dart';
+import 'package:my_estahban_city/features/feat_home/pages/quick_tools_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -140,11 +142,17 @@ class _HomePageState extends State<HomePage> {
                 ListTile(
                   leading: const Icon(Icons.flash_on, color: Colors.orange),
                   title: const Text(
-                    'سایر امکانات سریع',
+                    'سایر امکانات',
                     style: TextStyle(fontFamily: 'Vazir'),
                   ),
                   onTap: () {
                     Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const QuickToolsPage(),
+                      ),
+                    );
                   },
                 ),
               ],

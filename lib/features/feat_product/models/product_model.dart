@@ -1,4 +1,5 @@
-// lib/features/feat_product/product_model.dart
+// lib/features/feat_product/models/product_model.dart
+
 import 'package:pocketbase/pocketbase.dart';
 import 'package:my_estahban_city/services/pocketbase_instance.dart';
 
@@ -12,6 +13,7 @@ class ProductModel {
   final String mainImage;
   final List<String> galleryImages;
   final String? brand;
+  final String? model;
   final double? weight;
   final String? dimensions;
   final bool isAvailable;
@@ -29,6 +31,7 @@ class ProductModel {
     required this.mainImage,
     required this.galleryImages,
     this.brand,
+    this.model,
     this.weight,
     this.dimensions,
     required this.isAvailable,
@@ -62,6 +65,7 @@ class ProductModel {
       mainImage: mainImageUrl,
       galleryImages: galleryUrls,
       brand: record.data['brand'],
+      model: record.data['model'],
       weight: record.data['weight']?.toDouble(),
       dimensions: record.data['dimensions'],
       isAvailable: record.data['is_available'] ?? false,
@@ -79,6 +83,7 @@ class ProductModel {
       'stock': stock,
       'category': category,
       'brand': brand,
+      'model': model,
       'weight': weight,
       'dimensions': dimensions,
       'is_available': isAvailable,

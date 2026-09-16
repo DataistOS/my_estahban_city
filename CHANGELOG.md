@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.5.7] - 2026-03-28
+### Added
+- **Brands & Models Feature**: Introduced `BrandsPage` and `BrandProductsPage` to allow users to browse products categorized by their specific brands and models.
+- **Model-based Grouping**: Grouped products under each brand dynamically based on the `model` field fetched from PocketBase, providing a clean and structured catalog view.
+- **Quick Tools Integration**: Added quick tools and scanner options linking directly from the home dashboard menu.
+### Changed
+- **Product Model**: Added the optional `model` property to `ProductModel` to support detailed filtering and presentation.
+- **Product Service**: Implemented `getAllBrands()` and `getProductsByBrand()` methods to query filtered inventory seamlessly.
+- **Version Bump**: Updated application version to `0.5.7` in `VERSION` and `pubspec.yaml`.
+
 ## [0.5.5] - 2026-09-11
 ### Optimized
 * **Auth UI / Rive Animation:** Wrapped the login Rive animation (`bear.riv`) inside a `RepaintBoundary` to isolate rendering updates, eliminating UI jank and layout thrashing during text input on lower-end devices.

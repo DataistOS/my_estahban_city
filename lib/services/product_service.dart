@@ -1,4 +1,5 @@
 // lib/services/product_service.dart
+
 import 'package:flutter/foundation.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -26,7 +27,6 @@ class ProductService {
     }
   }
 
-  /// دریافت محصولات ویترین بر اساس شناسه (ID) دسته‌بندی ویترین
   Future<List<ProductModel>> getShowcaseProducts(
     String showcaseCategoryId,
   ) async {
@@ -80,6 +80,42 @@ class ProductService {
         print('Unknown Error during barcode search: $e');
       }
       return null;
+    }
+  }
+
+  Future<List<String>> getAllBrands() async {
+    try {
+      final records = await pocketBaseInstance
+          .collection('products')
+          .getFullList(sort: '-created', filter: 'is_available = true');
+
+      Set<String> brands = {};
+      for (var record in records) {
+        String? brand = record.data['brand'];
+        if (brand != null && brand.trim().isNotEmpty) {
+          brands.add(brand.trim());
+        }
+      }
+      return brands.toList();
+    } catch (e) {
+      if (kDebugMode) print('Error fetching brands: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<ProductModel>> getProductsByBrand(String brandName) async {
+    try {
+      final records = await pocketBaseInstance
+          .collection('products')
+          .getFullList(
+            sort: '-created',
+            filter: 'is_available = true && brand = "$brandName"',
+          );
+
+      return records.map((record) => ProductModel.fromRecord(record)).toList();
+    } catch (e) {
+      if (kDebugMode) print('Error fetching products by brand: $e');
+      rethrow;
     }
   }
 }
