@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.8] - 2026-03-28
+### Added
+- **Related Products Feature**: Added `getRelatedProducts()` method in `ProductService` to fetch active items belonging to the same category dynamically.
+- **Related Products Slider**: Implemented an intuitive horizontal product card slider at the bottom of `ProductDetailPage` to display related items and improve user engagement.
+### Changed
+- **Version Bump**: Updated application version to `0.5.8` in `VERSION` and `pubspec.yaml`.
+
 ## [0.5.7] - 2026-03-28
 ### Added
 - **Brands & Models Feature**: Introduced `BrandsPage` and `BrandProductsPage` to allow users to browse products categorized by their specific brands and models.

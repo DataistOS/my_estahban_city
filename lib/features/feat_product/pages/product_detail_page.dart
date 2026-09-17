@@ -1,7 +1,9 @@
 // lib/features/feat_product/pages/product_detail_page.dart
+
 import 'package:flutter/material.dart';
 import 'package:my_estahban_city/features/feat_product/models/product_model.dart';
 import 'package:my_estahban_city/services/cart_service.dart';
+import 'package:my_estahban_city/services/product_service.dart';
 import 'package:my_estahban_city/core/widgets/add_to_cart_button.dart';
 import 'package:my_estahban_city/features/feat_product/pages/full_screen_image_page.dart';
 
@@ -18,6 +20,17 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   final CartService cartService = CartService();
+  final ProductService productService = ProductService();
+  late Future<List<ProductModel>> _relatedProductsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _relatedProductsFuture = productService.getRelatedProducts(
+      widget.product.category,
+      widget.product.id,
+    );
+  }
 
   List<String> _getAllImages() {
     final List<String> images = [widget.product.mainImage];
@@ -120,6 +133,142 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     const SizedBox(height: 24),
                     Center(
                       child: AddToCartButton(productId: widget.product.id),
+                    ),
+                    const SizedBox(height: 32),
+
+                    const Text(
+                      'محصولات مشابه',
+                      style: TextStyle(
+                        fontFamily: 'Vazir',
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 220,
+                      child: FutureBuilder<List<ProductModel>>(
+                        future: _relatedProductsFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                'خطا در بارگذاری محصولات مشابه',
+                                style: TextStyle(
+                                  fontFamily: 'Vazir',
+                                  color: Colors.grey[600],
+                                  fontSize: 12,
+                                ),
+                              ),
+                            );
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'محصول مشابهی یافت نشد.',
+                                style: TextStyle(
+                                  fontFamily: 'Vazir',
+                                  color: Colors.grey[600],
+                                  fontSize: 13,
+                                ),
+                              ),
+                            );
+                          }
+
+                          final relatedProducts = snapshot.data!;
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: relatedProducts.length,
+                            itemBuilder: (context, index) {
+                              final relatedProduct = relatedProducts[index];
+                              return Container(
+                                width: 140,
+                                margin: const EdgeInsets.only(left: 12),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProductDetailPage(
+                                          product: relatedProduct,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Card(
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              const BorderRadius.vertical(
+                                                top: Radius.circular(10),
+                                              ),
+                                          child: Image.network(
+                                            relatedProduct.mainImage,
+                                            height: 110,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    const SizedBox(
+                                                      height: 110,
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.broken_image,
+                                                        ),
+                                                      ),
+                                                    ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                relatedProduct.name,
+                                                style: const TextStyle(
+                                                  fontFamily: 'Vazir',
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 13,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                '${relatedProduct.price.toInt()} ت',
+                                                style: const TextStyle(
+                                                  fontFamily: 'Vazir',
+                                                  color: Colors.green,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

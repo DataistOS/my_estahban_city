@@ -118,4 +118,24 @@ class ProductService {
       rethrow;
     }
   }
+
+  Future<List<ProductModel>> getRelatedProducts(
+    String categoryId,
+    String currentProductId,
+  ) async {
+    try {
+      final records = await pocketBaseInstance
+          .collection('products')
+          .getFullList(
+            sort: '-created',
+            filter:
+                'is_available = true && category = "$categoryId" && id != "$currentProductId"',
+          );
+
+      return records.map((record) => ProductModel.fromRecord(record)).toList();
+    } catch (e) {
+      if (kDebugMode) print('Error fetching related products: $e');
+      rethrow;
+    }
+  }
 }
