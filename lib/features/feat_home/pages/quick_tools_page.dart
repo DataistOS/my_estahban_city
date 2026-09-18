@@ -11,9 +11,9 @@ class QuickToolsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context);
+    final authService = Provider.of<AuthService>(context, listen: false);
     final user = authService.currentUser;
-    bool isVip = user != null && user.tier != null && user.tier != 'free';
+    final bool isVip = user != null && user.tier != null && user.tier != 'free';
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -99,7 +99,13 @@ class QuickToolsPage extends StatelessWidget {
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
-                  if (!isVip) {
+                  final currentUser = authService.currentUser;
+                  final bool currentIsVip =
+                      currentUser != null &&
+                      currentUser.tier != null &&
+                      currentUser.tier != 'free';
+
+                  if (!currentIsVip) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text(
