@@ -57,7 +57,7 @@ class ProductCard extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'Vazir',
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 8,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

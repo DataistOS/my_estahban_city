@@ -46,64 +46,109 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: const Color(0xFFDDE3F1),
         appBar: AppBar(
           title: Text(
             widget.product.name,
             style: const TextStyle(
               fontFamily: 'Vazir',
               fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Color(0xFF333333),
             ),
           ),
           backgroundColor: Colors.transparent,
           elevation: 0,
+          iconTheme: const IconThemeData(color: Color(0xFF333333)),
         ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // تصویر اصلی محصول با قابلیت کلیک و بزرگنمایی
               if (widget.product.mainImage.isNotEmpty)
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenImagePage(
-                          images: allImages,
-                          heroTag: 'product-image-${widget.product.id}',
-                          initialIndex: initialImageIndex,
-                        ),
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
-                    );
-                  },
-                  child: Hero(
-                    tag: 'product-image-${widget.product.id}',
-                    child: Image.network(
-                      widget.product.mainImage,
-                      fit: BoxFit.cover,
-                      height: 300,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return SizedBox(
-                          height: 300,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                  : null,
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => FullScreenImagePage(
+                              images: allImages,
+                              heroTag: 'product-image-${widget.product.id}',
+                              initialIndex: initialImageIndex,
                             ),
                           ),
                         );
                       },
-                      errorBuilder: (context, error, stackTrace) =>
-                          const SizedBox(
-                            height: 300,
-                            child: Center(child: Icon(Icons.error)),
-                          ),
+                      child: Hero(
+                        tag: 'product-image-${widget.product.id}',
+                        child: Image.network(
+                          widget.product.mainImage,
+                          fit: BoxFit.cover,
+                          height: 280,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return SizedBox(
+                              height: 280,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  value:
+                                      loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) =>
+                              const SizedBox(
+                                height: 280,
+                                child: Center(
+                                  child: Icon(
+                                    Icons.broken_image,
+                                    size: 48,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
+
+              // کارت حاوی اطلاعات اصلی محصول
+              Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -111,42 +156,72 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       widget.product.name,
                       style: const TextStyle(
                         fontFamily: 'Vazir',
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: Color(0xFF333333),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${widget.product.price.toInt()} تومان',
+                          style: const TextStyle(
+                            fontFamily: 'Vazir',
+                            fontSize: 18,
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        AddToCartButton(productId: widget.product.id),
+                      ],
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Divider(thickness: 1, color: Color(0xFFEEEEEE)),
+                    ),
+                    const Text(
+                      'توضیحات محصول',
+                      style: TextStyle(
+                        fontFamily: 'Vazir',
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'قیمت: ${widget.product.price.toInt()} تومان',
+                      widget.product.description,
                       style: const TextStyle(
                         fontFamily: 'Vazir',
-                        fontSize: 20,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Color(0xFF555555),
+                        height: 1.5,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      widget.product.description,
-                      style: const TextStyle(fontFamily: 'Vazir', fontSize: 16),
-                    ),
-                    const SizedBox(height: 24),
-                    Center(
-                      child: AddToCartButton(productId: widget.product.id),
-                    ),
-                    const SizedBox(height: 32),
+                  ],
+                ),
+              ),
 
+              // بخش محصولات مشابه
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     const Text(
                       'محصولات مشابه',
                       style: TextStyle(
                         fontFamily: 'Vazir',
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
+                        color: Color(0xFF333333),
                       ),
                     ),
                     const SizedBox(height: 12),
                     SizedBox(
-                      height: 220,
+                      height: 210,
                       child: FutureBuilder<List<ProductModel>>(
                         future: _relatedProductsFuture,
                         builder: (context, snapshot) {
@@ -187,7 +262,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             itemBuilder: (context, index) {
                               final relatedProduct = relatedProducts[index];
                               return Container(
-                                width: 140,
+                                width: 135,
                                 margin: const EdgeInsets.only(left: 12),
                                 child: InkWell(
                                   onTap: () {
@@ -200,10 +275,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                       ),
                                     );
                                   },
+                                  borderRadius: BorderRadius.circular(12),
                                   child: Card(
-                                    elevation: 2,
+                                    elevation: 1,
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Column(
                                       crossAxisAlignment:
@@ -212,20 +288,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                         ClipRRect(
                                           borderRadius:
                                               const BorderRadius.vertical(
-                                                top: Radius.circular(10),
+                                                top: Radius.circular(12),
                                               ),
                                           child: Image.network(
                                             relatedProduct.mainImage,
-                                            height: 110,
+                                            height: 100,
                                             width: double.infinity,
                                             fit: BoxFit.cover,
                                             errorBuilder:
                                                 (context, error, stackTrace) =>
                                                     const SizedBox(
-                                                      height: 110,
+                                                      height: 100,
                                                       child: Center(
                                                         child: Icon(
                                                           Icons.broken_image,
+                                                          color: Colors.grey,
                                                         ),
                                                       ),
                                                     ),
@@ -242,7 +319,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                 style: const TextStyle(
                                                   fontFamily: 'Vazir',
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 13,
+                                                  fontSize: 12,
                                                 ),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
@@ -253,7 +330,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                 style: const TextStyle(
                                                   fontFamily: 'Vazir',
                                                   color: Colors.green,
-                                                  fontSize: 12,
+                                                  fontSize: 11,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -270,6 +347,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         },
                       ),
                     ),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),

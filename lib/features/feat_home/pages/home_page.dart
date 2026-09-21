@@ -398,7 +398,7 @@ class _HomePageState extends State<HomePage> {
                                           style: const TextStyle(
                                             fontFamily: 'Vazir',
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16,
+                                            fontSize: 14,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
