@@ -18,6 +18,7 @@ import 'package:my_estahban_city/features/feat_home/widgets/app_drawer.dart';
 import 'package:my_estahban_city/features/feat_scanner/pages/product_scanner_page.dart';
 import 'package:my_estahban_city/features/feat_bottom_nav/widgets/custom_bottom_nav_bar.dart';
 import 'package:my_estahban_city/features/feat_home/pages/quick_tools_page.dart';
+import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -378,14 +379,11 @@ class _HomePageState extends State<HomePage> {
                               child: Row(
                                 children: [
                                   if (product.mainImage.isNotEmpty)
-                                    ClipRRect(
+                                    CachedImageWidget(
+                                      imageUrl: product.mainImage,
+                                      height: 80,
+                                      width: 80,
                                       borderRadius: BorderRadius.circular(8.0),
-                                      child: Image.network(
-                                        product.mainImage,
-                                        height: 80,
-                                        width: 80,
-                                        fit: BoxFit.cover,
-                                      ),
                                     ),
                                   const SizedBox(width: 16),
                                   Expanded(

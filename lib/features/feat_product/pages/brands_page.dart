@@ -5,6 +5,7 @@ import 'package:my_estahban_city/features/feat_product/models/product_model.dart
 import 'package:my_estahban_city/features/feat_product/pages/product_detail_page.dart';
 import 'package:my_estahban_city/services/product_service.dart';
 import 'package:my_estahban_city/core/widgets/add_to_cart_button.dart';
+import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
 
 class BrandsPage extends StatefulWidget {
   const BrandsPage({super.key});
@@ -269,14 +270,11 @@ class BrandProductsPage extends StatelessWidget {
                             child: Row(
                               children: [
                                 if (product.mainImage.isNotEmpty)
-                                  ClipRRect(
+                                  CachedImageWidget(
+                                    imageUrl: product.mainImage,
+                                    height: 70,
+                                    width: 70,
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      product.mainImage,
-                                      height: 70,
-                                      width: 70,
-                                      fit: BoxFit.cover,
-                                    ),
                                   ),
                                 const SizedBox(width: 16),
                                 Expanded(

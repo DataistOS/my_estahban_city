@@ -1,10 +1,11 @@
 // lib/features/feat_product/cart_page.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart'; // اضافه شده برای خواندن متغیرها
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:my_estahban_city/features/feat_cart/models/cart_model.dart';
 import 'package:my_estahban_city/features/feat_product/models/product_model.dart';
 import 'package:my_estahban_city/services/cart_service.dart';
+import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -189,14 +190,11 @@ class _CartPageState extends State<CartPage> {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            ClipRRect(
+            CachedImageWidget(
+              imageUrl: product.mainImage,
+              width: 80,
+              height: 80,
               borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                product.mainImage,
-                width: 80,
-                height: 80,
-                fit: BoxFit.cover,
-              ),
             ),
             const SizedBox(width: 16),
             Expanded(

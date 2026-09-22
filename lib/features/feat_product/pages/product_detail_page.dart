@@ -6,6 +6,7 @@ import 'package:my_estahban_city/services/cart_service.dart';
 import 'package:my_estahban_city/services/product_service.dart';
 import 'package:my_estahban_city/core/widgets/add_to_cart_button.dart';
 import 'package:my_estahban_city/features/feat_product/pages/full_screen_image_page.dart';
+import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
 
 class ProductDetailPage extends StatefulWidget {
   static const String routeName = '/product-detail';
@@ -65,7 +66,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // تصویر اصلی محصول با قابلیت کلیک و بزرگنمایی
               if (widget.product.mainImage.isNotEmpty)
                 Container(
                   margin: const EdgeInsets.symmetric(
@@ -82,59 +82,30 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       ),
                     ],
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => FullScreenImagePage(
-                              images: allImages,
-                              heroTag: 'product-image-${widget.product.id}',
-                              initialIndex: initialImageIndex,
-                            ),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => FullScreenImagePage(
+                            images: allImages,
+                            heroTag: 'product-image-${widget.product.id}',
+                            initialIndex: initialImageIndex,
                           ),
-                        );
-                      },
-                      child: Hero(
-                        tag: 'product-image-${widget.product.id}',
-                        child: Image.network(
-                          widget.product.mainImage,
-                          fit: BoxFit.cover,
-                          height: 280,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return SizedBox(
-                              height: 280,
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  value:
-                                      loadingProgress.expectedTotalBytes != null
-                                      ? loadingProgress.cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                      : null,
-                                ),
-                              ),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) =>
-                              const SizedBox(
-                                height: 280,
-                                child: Center(
-                                  child: Icon(
-                                    Icons.broken_image,
-                                    size: 48,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
                         ),
+                      );
+                    },
+                    child: Hero(
+                      tag: 'product-image-${widget.product.id}',
+                      child: CachedImageWidget(
+                        imageUrl: widget.product.mainImage,
+                        height: 280,
+                        width: double.infinity,
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                   ),
                 ),
 
-              // کارت حاوی اطلاعات اصلی محصول
               Container(
                 margin: const EdgeInsets.all(16),
                 padding: const EdgeInsets.all(20),
@@ -204,7 +175,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
               ),
 
-              // بخش محصولات مشابه
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
@@ -285,28 +255,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        ClipRRect(
+                                        CachedImageWidget(
+                                          imageUrl: relatedProduct.mainImage,
+                                          height: 100,
+                                          width: double.infinity,
                                           borderRadius:
                                               const BorderRadius.vertical(
                                                 top: Radius.circular(12),
                                               ),
-                                          child: Image.network(
-                                            relatedProduct.mainImage,
-                                            height: 100,
-                                            width: double.infinity,
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) =>
-                                                    const SizedBox(
-                                                      height: 100,
-                                                      child: Center(
-                                                        child: Icon(
-                                                          Icons.broken_image,
-                                                          color: Colors.grey,
-                                                        ),
-                                                      ),
-                                                    ),
-                                          ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),

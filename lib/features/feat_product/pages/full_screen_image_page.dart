@@ -1,6 +1,7 @@
 // lib/features/feat_product/pages/full_screen_image_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
 
 class FullScreenImagePage extends StatefulWidget {
   final List<String> images;
@@ -45,11 +46,8 @@ class _FullScreenImagePageState extends State<FullScreenImagePage> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       extendBodyBehindAppBar: true,
-      // **حذف GestureDetector خارجی برای رفع تداخل با swipe**
       body: Stack(
         children: [
-          // ویجت اصلی: PageView برای اسلاید
-          // اکنون PageView کنترل ژست‌ها را در دست می‌گیرد.
           PageView.builder(
             controller: _pageController,
             itemCount: widget.images.length,
@@ -62,25 +60,13 @@ class _FullScreenImagePageState extends State<FullScreenImagePage> {
               final imageUrl = widget.images[index];
               final isInitialImage = index == widget.initialIndex;
 
-              final imageWidget = Image.network(
-                imageUrl,
+              final imageWidget = CachedImageWidget(
+                imageUrl: imageUrl,
                 fit: BoxFit.contain,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(
-                    child: CircularProgressIndicator(color: Colors.white),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) =>
-                const Icon(Icons.error, color: Colors.white),
               );
 
-              // Hero فقط برای عکسی که در ابتدا باز می‌شود
               if (isInitialImage) {
-                return Hero(
-                  tag: widget.heroTag, // استفاده از همان تگ ارسالی
-                  child: imageWidget,
-                );
+                return Hero(tag: widget.heroTag, child: imageWidget);
               }
               return imageWidget;
             },

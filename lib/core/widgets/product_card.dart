@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_estahban_city/features/feat_product/pages/product_detail_page.dart';
 import 'package:my_estahban_city/features/feat_product/models/product_model.dart';
 import 'package:my_estahban_city/services/cart_service.dart';
+import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductModel product;
@@ -42,14 +43,11 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (product.mainImage.isNotEmpty)
-                    ClipRRect(
+                    CachedImageWidget(
+                      imageUrl: product.mainImage,
+                      height: 120,
+                      width: double.infinity,
                       borderRadius: BorderRadius.circular(12.0),
-                      child: Image.network(
-                        product.mainImage,
-                        height: 120,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
                     ),
                   const SizedBox(height: 8),
                   Text(

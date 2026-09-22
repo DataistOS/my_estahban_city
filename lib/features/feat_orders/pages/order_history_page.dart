@@ -1,13 +1,14 @@
 // lib/features/feat_orders/pages/order_history_page.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart'; // اضافه شده برای خواندن متغیرهای محیطی
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_estahban_city/features/feat_product/models/order_model.dart';
 import 'package:my_estahban_city/features/feat_product/models/product_model.dart';
 import 'package:my_estahban_city/services/cart_service.dart';
 import 'package:my_estahban_city/services/pocketbase_instance.dart';
+import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
 
 class OrderHistoryPage extends StatefulWidget {
   const OrderHistoryPage({super.key});
@@ -166,7 +167,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               return Column(
                 children: [
                   _buildPaymentInfoBanner(context),
-                  // نمایش بنر حتی وقتی سفارشی ثبت نشده تا کاربر راهنمایی شود
                   const Expanded(
                     child: Center(
                       child: Text(
@@ -199,7 +199,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               );
             }
 
-            // صفحه‌بندی (Pagination)
             final totalPages = (visibleOrders.length / _itemsPerPage).ceil();
             if (_currentPage >= totalPages)
               _currentPage = totalPages > 0 ? totalPages - 1 : 0;
@@ -212,7 +211,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
 
             return Column(
               children: [
-                // بنر راهنمای پرداخت در بالای لیست سفارشات
                 _buildPaymentInfoBanner(context),
                 Expanded(
                   child: ListView.builder(
@@ -379,14 +377,11 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
                     child: Row(
                       children: [
-                        ClipRRect(
+                        CachedImageWidget(
+                          imageUrl: product.mainImage,
+                          width: 50,
+                          height: 50,
                           borderRadius: BorderRadius.circular(6),
-                          child: Image.network(
-                            product.mainImage,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
