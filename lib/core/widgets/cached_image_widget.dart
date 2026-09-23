@@ -35,23 +35,24 @@ class CachedImageWidget extends StatelessWidget {
       );
     }
 
+    int? memWidth;
+    int? memHeight;
+    if (width != null && width!.isFinite) {
+      memWidth = (width! * MediaQuery.of(context).devicePixelRatio).toInt();
+    }
+    if (height != null && height!.isFinite) {
+      memHeight = (height! * MediaQuery.of(context).devicePixelRatio).toInt();
+    }
+
     Widget imageWidget = CachedNetworkImage(
       imageUrl: imageUrl,
       width: width,
       height: height,
       fit: fit,
-      placeholder: (context, url) => Container(
-        width: width,
-        height: height,
-        color: Colors.grey[200],
-        child: const Center(
-          child: SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ),
-      ),
+      memCacheWidth: memWidth,
+      memCacheHeight: memHeight,
+      placeholder: (context, url) =>
+          Container(width: width, height: height, color: Colors.grey[200]),
       errorWidget: (context, url, error) => Container(
         width: width,
         height: height,
