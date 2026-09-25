@@ -18,123 +18,126 @@ class AppDrawer extends StatelessWidget {
 
     final primaryColor = Theme.of(context).primaryColor;
 
-    return Drawer(
-      child: Column(
-        children: [
-          UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: primaryColor),
-            accountName: const Text(
-              'استهبان‌من',
-              style: TextStyle(
-                fontFamily: 'Vazir',
-                fontWeight: FontWeight.bold,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Drawer(
+        child: Column(
+          children: [
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: primaryColor),
+              accountName: const Text(
+                'استهبان‌من',
+                style: TextStyle(
+                  fontFamily: 'Vazir',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              accountEmail: const Text(
+                'همراه هوشمند شهروندان',
+                style: TextStyle(fontFamily: 'Vazir', fontSize: 12),
+              ),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(Icons.person, size: 36, color: primaryColor),
               ),
             ),
-            accountEmail: const Text(
-              'همراه هوشمند شهروندان',
-              style: TextStyle(fontFamily: 'Vazir', fontSize: 12),
-            ),
-            currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(Icons.person, size: 36, color: primaryColor),
-            ),
-          ),
 
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              children: [
-                _buildDrawerItem(
-                  context,
-                  icon: Icons.person_outline_rounded,
-                  title: 'پروفایل ‌من',
-                  onTap: () => _navigateTo(context, const ProfilePage()),
-                ),
-                _buildDrawerItem(
-                  context,
-                  icon: Icons.history_rounded,
-                  title: 'تاریخچه خرید',
-                  onTap: () => _navigateTo(context, const OrderHistoryPage()),
-                ),
-                _buildDrawerItem(
-                  context,
-                  icon: Icons.add_shopping_cart_rounded,
-                  title: 'درخواست محصول',
-                  onTap: () =>
-                      Navigator.of(context).pushNamed('/request-product'),
-                ),
-                const Divider(indent: 16, endIndent: 16, height: 24),
-                _buildDrawerItem(
-                  context,
-                  icon: Icons.info_outline_rounded,
-                  title: 'درباره ما',
-                  onTap: () => _navigateTo(context, const AboutPage()),
-                ),
-              ],
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                children: [
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.person_outline_rounded,
+                    title: 'پروفایل ‌من',
+                    onTap: () => _navigateTo(context, const ProfilePage()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.history_rounded,
+                    title: 'تاریخچه خرید',
+                    onTap: () => _navigateTo(context, const OrderHistoryPage()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.add_shopping_cart_rounded,
+                    title: 'درخواست محصول',
+                    onTap: () =>
+                        Navigator.of(context).pushNamed('/request-product'),
+                  ),
+                  const Divider(indent: 16, endIndent: 16, height: 24),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.info_outline_rounded,
+                    title: 'درباره ما',
+                    onTap: () => _navigateTo(context, const AboutPage()),
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            width: double.infinity,
-            color: Colors.grey.shade50,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.location_on_outlined,
-                      size: 14,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        address,
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              width: double.infinity,
+              color: Colors.grey.shade50,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on_outlined,
+                        size: 14,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          address,
+                          style: const TextStyle(
+                            fontFamily: 'Vazir',
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.phone_outlined,
+                        size: 14,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'تلفن: $phone',
                         style: const TextStyle(
                           fontFamily: 'Vazir',
                           fontSize: 12,
                           color: Colors.grey,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.phone_outlined,
-                      size: 14,
-                      color: Colors.grey,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'تلفن: $phone',
-                      style: const TextStyle(
+                    ],
+                  ),
+                  const Divider(height: 16),
+                  Center(
+                    child: Text(
+                      appVersion,
+                      style: TextStyle(
                         fontFamily: 'Vazir',
-                        fontSize: 12,
-                        color: Colors.grey,
+                        fontSize: 11,
+                        color: Colors.grey.shade600,
                       ),
                     ),
-                  ],
-                ),
-                const Divider(height: 16),
-                Center(
-                  child: Text(
-                    appVersion,
-                    style: TextStyle(
-                      fontFamily: 'Vazir',
-                      fontSize: 11,
-                      color: Colors.grey.shade600,
-                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

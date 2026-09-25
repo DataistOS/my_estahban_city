@@ -16,12 +16,12 @@ class ProductService {
       return records.map((record) => ProductModel.fromRecord(record)).toList();
     } on ClientException catch (e) {
       if (kDebugMode) {
-        print('PocketBase Client Error: ${e.response['message']}');
+        debugPrint('PocketBase Client Error: ${e.response['message']}');
       }
       rethrow;
     } catch (e) {
       if (kDebugMode) {
-        print('Unknown Error: $e');
+        debugPrint('Unknown Error: $e');
       }
       rethrow;
     }
@@ -41,12 +41,14 @@ class ProductService {
       return records.map((record) => ProductModel.fromRecord(record)).toList();
     } on ClientException catch (e) {
       if (kDebugMode) {
-        print('PocketBase Client Error (Showcase): ${e.response['message']}');
+        debugPrint(
+          'PocketBase Client Error (Showcase): ${e.response['message']}',
+        );
       }
       rethrow;
     } catch (e) {
       if (kDebugMode) {
-        print('Unknown Error (Showcase): $e');
+        debugPrint('Unknown Error (Showcase): $e');
       }
       rethrow;
     }
@@ -70,14 +72,14 @@ class ProductService {
       return null;
     } on ClientException catch (e) {
       if (kDebugMode) {
-        print(
+        debugPrint(
           'PocketBase Client Error during barcode search: ${e.response['message']}',
         );
       }
       return null;
     } catch (e) {
       if (kDebugMode) {
-        print('Unknown Error during barcode search: $e');
+        debugPrint('Unknown Error during barcode search: $e');
       }
       return null;
     }
@@ -98,7 +100,9 @@ class ProductService {
       }
       return brands.toList();
     } catch (e) {
-      if (kDebugMode) print('Error fetching brands: $e');
+      if (kDebugMode) {
+        debugPrint('Error fetching brands: $e');
+      }
       rethrow;
     }
   }
@@ -114,7 +118,9 @@ class ProductService {
 
       return records.map((record) => ProductModel.fromRecord(record)).toList();
     } catch (e) {
-      if (kDebugMode) print('Error fetching products by brand: $e');
+      if (kDebugMode) {
+        debugPrint('Error fetching products by brand: $e');
+      }
       rethrow;
     }
   }
@@ -134,7 +140,9 @@ class ProductService {
 
       return records.map((record) => ProductModel.fromRecord(record)).toList();
     } catch (e) {
-      if (kDebugMode) print('Error fetching related products: $e');
+      if (kDebugMode) {
+        debugPrint('Error fetching related products: $e');
+      }
       rethrow;
     }
   }

@@ -38,7 +38,6 @@ class OrderModel {
       totalAmount: record.data['total_amount']?.toDouble() ?? 0.0,
       shippingAddress: record.data['shipping_address'] ?? {},
       status: record.data['status'] ?? 'unknown',
-      // Corrected to use get<String> for deprecated fields
       created: DateTime.parse(record.get<String>('created')),
       updated: DateTime.parse(record.get<String>('updated')),
     );

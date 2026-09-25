@@ -15,29 +15,28 @@ class AddToCartButton extends StatelessWidget {
         final cartService = CartService();
         try {
           await cartService.addItemToCart(productId);
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'محصول به سبد خرید اضافه شد.',
-                  textDirection: TextDirection.rtl,
-                ),
-                backgroundColor: Colors.green,
+
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'محصول به سبد خرید اضافه شد.',
+                textDirection: TextDirection.rtl,
               ),
-            );
-          }
+              backgroundColor: Colors.green,
+            ),
+          );
         } catch (e) {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'خطا در افزودن محصول به سبد خرید.',
-                  textDirection: TextDirection.rtl,
-                ),
-                backgroundColor: Colors.red,
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'خطا در افزودن محصول به سبد خرید.',
+                textDirection: TextDirection.rtl,
               ),
-            );
-          }
+              backgroundColor: Colors.red,
+            ),
+          );
         }
       },
       style: ElevatedButton.styleFrom(

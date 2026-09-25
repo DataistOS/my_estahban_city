@@ -14,7 +14,7 @@ class CustomBottomNavBar extends StatelessWidget {
   });
 
   static const String showcaseId = '540rdjqsuhu8m2s';
-  static const String gadgetld = 'muj88q8bix947wh';
+  static const String gadgetId = 'muj88q8bix947wh';
   static const String supermarketId = 'o3910cys37qsdu4';
 
   @override
@@ -25,7 +25,7 @@ class CustomBottomNavBar extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8.0,
             offset: const Offset(0, -2),
           ),
@@ -101,7 +101,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   ),
                   onTap: () {
                     Navigator.pop(context);
-                    onCategorySelected(gadgetld, 'گجت');
+                    onCategorySelected(gadgetId, 'گجت');
                   },
                 ),
                 ListTile(

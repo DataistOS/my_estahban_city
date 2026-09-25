@@ -72,7 +72,6 @@ class _FullScreenImagePageState extends State<FullScreenImagePage> {
             },
           ),
 
-          // نشانگرها (Indicators) در پایین صفحه
           Positioned(
             bottom: 30,
             left: 0,
@@ -88,7 +87,7 @@ class _FullScreenImagePageState extends State<FullScreenImagePage> {
                     shape: BoxShape.circle,
                     color: _currentIndex == index
                         ? Colors.white
-                        : Colors.white.withOpacity(0.4),
+                        : Colors.white.withValues(alpha: 0.4),
                   ),
                 );
               }),

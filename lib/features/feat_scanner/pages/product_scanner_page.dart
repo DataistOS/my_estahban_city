@@ -1,4 +1,5 @@
 // lib/features/feat_scanner/pages/product_scanner_page.dart
+
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
@@ -32,14 +33,12 @@ class _ProductScannerPageState extends State<ProductScannerPage> {
     super.dispose();
   }
 
-  void _handleBarcode(
-    BarcodeCapture barcodeCapture,
-    BuildContext context,
-  ) async {
+  void _handleBarcode(BarcodeCapture barcodeCapture) async {
     if (_isProcessing) return;
 
     final String? code = barcodeCapture.barcodes.first.rawValue;
     if (code == null || code.isEmpty) {
+      if (!mounted) return;
       setState(() {
         _errorMessage = 'کد اسکن شده نامعتبر است.';
       });
@@ -58,31 +57,34 @@ class _ProductScannerPageState extends State<ProductScannerPage> {
       );
       final product = await productService.getProductByCode(code);
 
-      if (product != null) {
-        if (mounted) {
-          controller.stop();
+      if (!mounted) return;
 
-          Navigator.of(
-            context,
-          ).popAndPushNamed(ProductDetailPage.routeName, arguments: product);
-        }
+      if (product != null) {
+        controller.stop();
+        if (!context.mounted) return;
+        Navigator.of(
+          context,
+        ).popAndPushNamed(ProductDetailPage.routeName, arguments: product);
       } else {
         setState(() {
           _errorMessage =
               'محصولی با این کد (${code.substring(0, code.length > 20 ? 20 : code.length)}...) یافت نشد.';
         });
         await Future.delayed(const Duration(seconds: 5));
+        if (!mounted) return;
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorMessage = 'خطایی در جستجوی محصول رخ داد.';
       });
       await Future.delayed(const Duration(seconds: 5));
+      if (!mounted) return;
     } finally {
-      setState(() {
-        _isProcessing = false;
-      });
       if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
         controller.start();
       }
     }
@@ -166,7 +168,7 @@ class _ProductScannerPageState extends State<ProductScannerPage> {
                 controller: controller,
                 onDetect: (barcodeCapture) {
                   if (!_isProcessing) {
-                    _handleBarcode(barcodeCapture, context);
+                    _handleBarcode(barcodeCapture);
                   }
                 },
               ),
@@ -194,7 +196,7 @@ class _ProductScannerPageState extends State<ProductScannerPage> {
                   child: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.8),
+                      color: Colors.red.withValues(alpha: 0.8),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(

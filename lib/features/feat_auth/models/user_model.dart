@@ -1,4 +1,4 @@
-//lib/features/feat_auth/models/user_model.dart
+// lib/features/feat_auth/models/user_model.dart
 
 import 'package:pocketbase/pocketbase.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -67,7 +67,6 @@ class UserModel {
       name: safeName,
       userType: record.get<String?>('user_type'),
       tier: record.get<String?>('tier') ?? 'free',
-      // مقدار پیش‌فرض free
       phoneNumber: record.get<String?>('phone_number'),
       address: record.get<String?>('address'),
       nationalCode: record.get<String?>('national_code'),

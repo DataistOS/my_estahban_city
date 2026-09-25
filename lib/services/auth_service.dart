@@ -1,4 +1,5 @@
 // lib/services/auth_service.dart
+
 import 'package:flutter/foundation.dart';
 import 'package:pocketbase/pocketbase.dart';
 
@@ -29,14 +30,14 @@ class AuthService with ChangeNotifier {
       try {
         _currentUser = UserModel.fromRecord(user);
         if (kDebugMode) {
-          print('Current user fetched successfully.');
+          debugPrint('Current user fetched successfully.');
         }
       } catch (e) {
         if (kDebugMode) {
-          print(
+          debugPrint(
             'CRITICAL: UserModel.fromRecord failed during _fetchCurrentUser: $e',
           );
-          print(
+          debugPrint(
             'User model creation failed, treating current user as null for safety.',
           );
         }
@@ -63,19 +64,19 @@ class AuthService with ChangeNotifier {
           .authWithPassword(nationalCodeOrIdentifier, password);
       _currentUser = UserModel.fromRecord(authData.record);
       if (kDebugMode) {
-        print('Login successful, user: $_currentUser');
+        debugPrint('Login successful, user: $_currentUser');
       }
     } on ClientException catch (e) {
       _errorMessage = e.response['message'] ?? 'کد ملی یا رمز عبور اشتباه است.';
       if (kDebugMode) {
-        print(
+        debugPrint(
           'PocketBase Client Error: Status ${e.response['status'] ?? 400} - ${e.response['message']}',
         );
       }
     } catch (e) {
       _errorMessage = 'خطای ناشناخته رخ داد. لطفاً دوباره تلاش کنید.';
       if (kDebugMode) {
-        print('Unknown Error Details: $e');
+        debugPrint('Unknown Error Details: $e');
       }
     } finally {
       _isLoading = false;
@@ -93,26 +94,26 @@ class AuthService with ChangeNotifier {
           .create(body: userData);
       _currentUser = UserModel.fromRecord(authData);
       if (kDebugMode) {
-        print('Registration successful, user: $_currentUser');
+        debugPrint('Registration successful, user: $_currentUser');
       }
     } on ClientException catch (e) {
       _errorMessage = e.response['message'] ?? 'خطا در ثبت‌نام رخ داد.';
       if (kDebugMode) {
-        print(
+        debugPrint(
           'PocketBase Client Error: Status ${e.response['status'] ?? 400} - ${e.response['message']}',
         );
       }
     } catch (e) {
       if (_currentUser != null) {
         if (kDebugMode) {
-          print(
+          debugPrint(
             'Non-critical error suppressed after successful registration: $e',
           );
         }
       } else {
         _errorMessage = 'خطای ناشناخته در ثبت‌نام. لطفاً دوباره تلاش کنید.';
         if (kDebugMode) {
-          print('Unknown Registration Error: $e');
+          debugPrint('Unknown Registration Error: $e');
         }
       }
     } finally {

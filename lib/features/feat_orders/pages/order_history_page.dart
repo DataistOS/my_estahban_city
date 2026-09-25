@@ -139,13 +139,16 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             FutureBuilder<List<OrderModel>>(
               future: _ordersFuture,
               builder: (context, snapshot) {
-                if (!snapshot.hasData || snapshot.data!.isEmpty)
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const SizedBox.shrink();
+                }
                 final visibleOrders = snapshot.data!
                     .where((o) => !_hiddenOrderIds.contains(o.id))
                     .toList();
 
-                if (visibleOrders.isEmpty) return const SizedBox.shrink();
+                if (visibleOrders.isEmpty) {
+                  return const SizedBox.shrink();
+                }
 
                 return IconButton(
                   icon: const Icon(Icons.delete_sweep, color: Colors.red),
@@ -200,8 +203,9 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             }
 
             final totalPages = (visibleOrders.length / _itemsPerPage).ceil();
-            if (_currentPage >= totalPages)
+            if (_currentPage >= totalPages) {
               _currentPage = totalPages > 0 ? totalPages - 1 : 0;
+            }
 
             final startIndex = _currentPage * _itemsPerPage;
             final endIndex = (startIndex + _itemsPerPage < visibleOrders.length)
@@ -262,7 +266,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     );
   }
 
-  // ویجت بنر اطلاعات پرداخت کارت به کارت
   Widget _buildPaymentInfoBanner(BuildContext context) {
     final cardNumber =
         dotenv.env['SUPPORT_CARD_NUMBER'] ?? '۶۱۰۴-۳۳۷۹-xxxx-xxxx';
@@ -342,7 +345,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(order.status).withOpacity(0.1),
+                    color: _getStatusColor(order.status).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -363,6 +366,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                 future: pocketBaseInstance
                     .collection('products')
                     .getOne(item.productId)
+                    .then<RecordModel?>((value) => value)
                     .catchError((_) => null),
                 builder: (context, productSnapshot) {
                   if (!productSnapshot.hasData ||

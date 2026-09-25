@@ -87,7 +87,7 @@ class ProfilePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildProfileHeader(context, user.name ?? 'شهروند استهبان‌'),
+            _buildProfileHeader(user.name ?? 'شهروند استهبان'),
 
             const SizedBox(height: 16),
 
@@ -100,21 +100,18 @@ class ProfilePage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    _buildInfoTile(context, Icons.email, 'ایمیل', user.email),
+                    _buildInfoTile(Icons.email, 'ایمیل', user.email),
                     _buildInfoTile(
-                      context,
                       Icons.phone,
                       'شماره تلفن',
                       user.phoneNumber ?? 'وارد نشده',
                     ),
                     _buildInfoTile(
-                      context,
                       Icons.location_on,
                       'آدرس',
                       user.address ?? 'وارد نشده',
                     ),
                     _buildInfoTile(
-                      context,
                       Icons.person_pin,
                       'نوع کاربر',
                       user.userType ?? 'نامشخص',
@@ -136,13 +133,11 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   children: [
                     _buildInfoTile(
-                      context,
                       Icons.date_range,
                       'تاریخ ثبت‌نام',
                       formattedDateCreated,
                     ),
                     _buildInfoTile(
-                      context,
                       Icons.update,
                       'تاریخ آخرین به‌روزرسانی',
                       formattedDateUpdated,
@@ -157,6 +152,7 @@ class ProfilePage extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () async {
                 await authService.logout();
+                if (!context.mounted) return;
                 Navigator.of(context).popUntil((route) => route.isFirst);
               },
               icon: const Icon(Icons.logout, size: 20),
@@ -179,7 +175,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, String name) {
+  // حذف context اضافه
+  Widget _buildProfileHeader(String name) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
@@ -187,7 +184,7 @@ class ProfilePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, 3),
@@ -216,12 +213,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoTile(
-    BuildContext context,
-    IconData icon,
-    String title,
-    String subtitle,
-  ) {
+  Widget _buildInfoTile(IconData icon, String title, String subtitle) {
     return ListTile(
       leading: Icon(icon, color: const Color(0xFF333333)),
       title: Text(

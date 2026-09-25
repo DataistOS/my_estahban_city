@@ -8,6 +8,7 @@ import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
 
 class ProductCard extends StatelessWidget {
   final ProductModel product;
+
   final CartService cartService = CartService();
 
   ProductCard({super.key, required this.product});
@@ -55,7 +56,7 @@ class ProductCard extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'Vazir',
                       fontWeight: FontWeight.bold,
-                      fontSize: 8,
+                      fontSize: 12,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -80,6 +81,9 @@ class ProductCard extends StatelessWidget {
                           ? () async {
                               try {
                                 await cartService.addItemToCart(product.id);
+
+                                if (!context.mounted) return;
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
@@ -90,6 +94,8 @@ class ProductCard extends StatelessWidget {
                                   ),
                                 );
                               } catch (e) {
+                                if (!context.mounted) return;
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
@@ -107,10 +113,10 @@ class ProductCard extends StatelessWidget {
                         foregroundColor: Colors.white,
                         disabledBackgroundColor: Colors.grey.shade400,
                       ),
-                      icon: const Icon(Icons.add_shopping_cart),
+                      icon: const Icon(Icons.add_shopping_cart, size: 16),
                       label: const Text(
                         'افزودن',
-                        style: TextStyle(fontFamily: 'Vazir'),
+                        style: TextStyle(fontFamily: 'Vazir', fontSize: 12),
                       ),
                     ),
                   ),
@@ -127,7 +133,7 @@ class ProductCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.8),
+                      color: Colors.red.withValues(alpha: 0.8),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Text(

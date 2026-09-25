@@ -16,9 +16,14 @@ class RequestProductService {
       );
     }
 
+    final trimmedText = requestText.trim();
+    if (trimmedText.isEmpty) {
+      throw Exception("Product request text cannot be empty.");
+    }
+
     try {
       final body = <String, dynamic>{
-        "request_text": requestText,
+        "request_text": trimmedText,
         "user": userId,
       };
 
@@ -27,14 +32,14 @@ class RequestProductService {
           .create(body: body);
     } on ClientException catch (e) {
       if (kDebugMode) {
-        print('PocketBase Client Error: ${e.response['message']}');
+        debugPrint('PocketBase Client Error: ${e.response['message']}');
       }
       throw Exception(
         "Failed to create product request: ${e.response['message']}",
       );
     } catch (e) {
       if (kDebugMode) {
-        print('Unknown Error: $e');
+        debugPrint('Unknown Error: $e');
       }
       rethrow;
     }

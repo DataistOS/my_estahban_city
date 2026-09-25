@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.4] - 2026-09-25
+### Refactor & Architecture
+- **Home Feature**: Extracted the product list section into a dedicated independent widget (`HomeProductList`) to improve code modularity, readability, and separation of concerns in `HomePage`.
+- **Code Quality**: Performed a comprehensive cleanup across core widgets, features, and services, resolving deprecated API usages and ensuring strict compliance with Flutter/Dart lint standards.
+### Maintenance
+- **Version Bump**: Updated project version to `0.6.4+1`.
+
 ## [0.5.8] - 2026-03-28
 ### Added
 - **Related Products Feature**: Added `getRelatedProducts()` method in `ProductService` to fetch active items belonging to the same category dynamically.

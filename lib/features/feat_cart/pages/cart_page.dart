@@ -46,6 +46,9 @@ class _CartPageState extends State<CartPage> {
         'city': 'Estahban',
         'street': 'Main Street',
       });
+
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -57,6 +60,8 @@ class _CartPageState extends State<CartPage> {
       );
       _refreshCart();
     } catch (e) {
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('خطا در ثبت سفارش.', textDirection: TextDirection.rtl),
@@ -88,7 +93,12 @@ class _CartPageState extends State<CartPage> {
             } else if (snapshot.hasError) {
               return Center(child: Text('خطا: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.items.isEmpty) {
-              return const Center(child: Text('سبد خرید شما خالی است.'));
+              return const Center(
+                child: Text(
+                  'سبد خرید شما خالی است.',
+                  style: TextStyle(fontFamily: 'Vazir', fontSize: 16),
+                ),
+              );
             } else {
               final cart = snapshot.data!;
               double totalAmount = 0.0;
@@ -109,7 +119,7 @@ class _CartPageState extends State<CartPage> {
                         final product = item.product;
 
                         if (product == null) {
-                          return const SizedBox();
+                          return const SizedBox.shrink();
                         }
 
                         return _buildCartItemCard(item, product, context);
@@ -211,7 +221,7 @@ class _CartPageState extends State<CartPage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'قیمت: ${product.price.toInt()}',
+                    'قیمت: ${product.price.toInt()} تومان',
                     style: const TextStyle(
                       fontFamily: 'Vazir',
                       color: Colors.green,
@@ -277,7 +287,7 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
               Text(
-                '${totalAmount.toInt()}',
+                '${totalAmount.toInt()} تومان',
                 style: const TextStyle(
                   fontFamily: 'Vazir',
                   fontSize: 18,

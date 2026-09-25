@@ -1,9 +1,10 @@
 // lib/features/feat_search/widgets/search_widget.dart
 
-import '../services/search_history_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+
+import '../services/search_history_service.dart';
 
 class SearchWidget extends StatefulWidget {
   final ValueChanged<String> onSearch;
@@ -24,7 +25,6 @@ class _SearchWidgetState extends State<SearchWidget> {
   final SearchHistoryService _searchHistoryService = SearchHistoryService();
 
   Timer? _debounceTimer;
-
   String _lastSavedQuery = '';
 
   @override
@@ -48,7 +48,7 @@ class _SearchWidgetState extends State<SearchWidget> {
           _searchHistoryService.saveSearchQuery(query);
           _lastSavedQuery = query;
           if (kDebugMode) {
-            print('Search query saved: $query');
+            debugPrint('Search query saved: $query');
           }
         }
       });

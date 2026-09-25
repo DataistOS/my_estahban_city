@@ -16,8 +16,8 @@ class CartItemModel {
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
     return CartItemModel(
-      productId: json['product_id'],
-      quantity: json['quantity'],
+      productId: json['product_id'] ?? '',
+      quantity: json['quantity'] ?? 1,
     );
   }
 
@@ -43,15 +43,19 @@ class CartModel {
 
   factory CartModel.fromRecord(RecordModel record) {
     final List<CartItemModel> cartItems = [];
-    if (record.data['items'] != null && record.data['items'] is List) {
-      for (var item in record.data['items']) {
-        cartItems.add(CartItemModel.fromJson(item as Map<String, dynamic>));
+    final rawItems = record.data['items'];
+
+    if (rawItems != null && rawItems is List) {
+      for (var item in rawItems) {
+        if (item is Map<String, dynamic>) {
+          cartItems.add(CartItemModel.fromJson(item));
+        }
       }
     }
 
     return CartModel(
       id: record.id,
-      userId: record.data['user'],
+      userId: record.data['user'] ?? '',
       items: cartItems,
       created: DateTime.parse(record.get<String>('created')),
       updated: DateTime.parse(record.get<String>('updated')),

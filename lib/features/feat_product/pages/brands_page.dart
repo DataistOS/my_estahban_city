@@ -89,7 +89,7 @@ class _BrandsPageState extends State<BrandsPage> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.03),
+                          color: Colors.black.withValues(alpha: 0.03),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -232,7 +232,8 @@ class BrandProductsPage extends StatelessWidget {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.indigo.withOpacity(0.1),
+                              // اصلاح withOpacity با withValues
+                              color: Colors.indigo.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(

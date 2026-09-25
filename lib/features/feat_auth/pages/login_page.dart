@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:my_estahban_city/services/auth_service.dart';
-
-import '../../feat_home/pages/home_page.dart';
+import 'package:my_estahban_city/features/feat_home/pages/home_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -70,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
       _isHandsUp?.value = false;
 
       await Future.delayed(const Duration(milliseconds: 500));
+      if (!mounted) return;
 
       try {
         await authService.login(
@@ -87,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
           _isFail?.value = true;
         }
       } catch (e) {
+        if (!mounted) return;
         _isFail?.value = true;
       }
     }

@@ -23,23 +23,28 @@ class _RequestProductPageState extends State<RequestProductPage> {
     super.dispose();
   }
 
+  void _showSnackBar(String message, {Color backgroundColor = Colors.black}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: const TextStyle(fontFamily: 'Vazir')),
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
+
   void _submitRequest() async {
     final authService = Provider.of<AuthService>(context, listen: false);
     final userId = authService.currentUser?.id;
+    final requestText = _requestController.text.trim();
 
     if (userId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('برای ثبت درخواست، ابتدا وارد حساب کاربری خود شوید.'),
-        ),
-      );
+      _showSnackBar('برای ثبت درخواست، ابتدا وارد حساب کاربری خود شوید.');
       return;
     }
 
-    if (_requestController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('لطفاً متن درخواست خود را وارد کنید.')),
-      );
+    if (requestText.isEmpty) {
+      _showSnackBar('لطفاً متن درخواست خود را وارد کنید.');
       return;
     }
 
@@ -50,27 +55,22 @@ class _RequestProductPageState extends State<RequestProductPage> {
     try {
       await _requestService.createProductRequest(
         userId: userId,
-        requestText: _requestController.text,
+        requestText: requestText,
       );
-      // Show success message and clear text field.
+
+      _showSnackBar(
+        'درخواست شما با موفقیت ثبت شد.',
+        backgroundColor: Colors.green,
+      );
+
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('درخواست شما با موفقیت ثبت شد.'),
-            backgroundColor: Colors.green,
-          ),
-        );
         _requestController.clear();
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('خطا در ارسال درخواست: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      _showSnackBar(
+        'خطا در ارسال درخواست: ${e.toString()}',
+        backgroundColor: Colors.red,
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -85,7 +85,12 @@ class _RequestProductPageState extends State<RequestProductPage> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: AppBar(title: const Text('درخواست موجود کردن محصول')),
+        appBar: AppBar(
+          title: const Text(
+            'درخواست موجود کردن محصول',
+            style: TextStyle(fontFamily: 'Vazir'),
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -99,9 +104,11 @@ class _RequestProductPageState extends State<RequestProductPage> {
               TextField(
                 controller: _requestController,
                 maxLines: 5,
+                style: const TextStyle(fontFamily: 'Vazir'),
                 decoration: InputDecoration(
                   hintText:
                       'نام محصول یا توضیحات مربوط به درخواست خود را اینجا بنویسید...',
+                  hintStyle: const TextStyle(fontFamily: 'Vazir'),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -115,7 +122,10 @@ class _RequestProductPageState extends State<RequestProductPage> {
                   : ElevatedButton.icon(
                       onPressed: _submitRequest,
                       icon: const Icon(Icons.send),
-                      label: const Text('ارسال درخواست'),
+                      label: const Text(
+                        'ارسال درخواست',
+                        style: TextStyle(fontFamily: 'Vazir'),
+                      ),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(

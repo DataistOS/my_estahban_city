@@ -12,8 +12,6 @@ class QuickToolsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
-    final user = authService.currentUser;
-    final bool isVip = user != null && user.tier != null && user.tier != 'free';
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -101,7 +99,7 @@ class QuickToolsPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.03),
+                            color: Colors.black.withValues(alpha: 0.03),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),

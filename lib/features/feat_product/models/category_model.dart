@@ -1,3 +1,5 @@
+// lib/features/feat_product/models/category_model.dart
+
 import 'package:pocketbase/pocketbase.dart';
 import 'package:my_estahban_city/services/pocketbase_instance.dart';
 
@@ -20,19 +22,20 @@ class CategoryModel {
 
   factory CategoryModel.fromRecord(RecordModel record) {
     String? iconUrl;
-    if (record.data['icon'] != null && record.data['icon'].isNotEmpty) {
-      iconUrl = pocketBaseInstance
-          .getFileUrl(record, record.data['icon'])
+    final iconValue = record.data['icon'];
+    if (iconValue != null && iconValue.toString().isNotEmpty) {
+      iconUrl = pocketBaseInstance.files
+          .getURL(record, iconValue.toString())
           .toString();
     }
 
     return CategoryModel(
       id: record.id,
-      name: record.data['name'],
+      name: record.data['name'] ?? '',
       icon: iconUrl,
       parentCategory: record.data['parent_category'],
-      created: DateTime.parse(record.created),
-      updated: DateTime.parse(record.updated),
+      created: DateTime.parse(record.get<String>('created')),
+      updated: DateTime.parse(record.get<String>('updated')),
     );
   }
 

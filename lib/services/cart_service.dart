@@ -1,5 +1,6 @@
 // lib/services/cart_service.dart
 
+import 'package:flutter/foundation.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 import 'package:my_estahban_city/services/pocketbase_instance.dart';
@@ -88,6 +89,9 @@ class CartService {
       if (e is ClientException && e.response['code'] == 404) {
         return null;
       }
+      if (kDebugMode) {
+        debugPrint('Error fetching cart with products: $e');
+      }
       rethrow;
     }
   }
@@ -138,8 +142,9 @@ class CartService {
                 ],
               },
             );
+      } else {
+        rethrow;
       }
-      rethrow;
     }
   }
 

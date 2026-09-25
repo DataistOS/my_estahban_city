@@ -1,3 +1,5 @@
+// lib/features/feat_product/order_item_model.dart (یا مسیر مربوطه)
+
 import 'package:pocketbase/pocketbase.dart';
 
 class OrderItemModel {
@@ -22,12 +24,12 @@ class OrderItemModel {
   factory OrderItemModel.fromRecord(RecordModel record) {
     return OrderItemModel(
       id: record.id,
-      order: record.data['order'],
-      product: record.data['product'],
+      order: record.data['order'] ?? '',
+      product: record.data['product'] ?? '',
       quantity: record.data['quantity']?.toInt() ?? 0,
       priceAtPurchase: record.data['price_at_purchase']?.toDouble() ?? 0.0,
-      created: DateTime.parse(record.created),
-      updated: DateTime.parse(record.updated),
+      created: DateTime.parse(record.get<String>('created')),
+      updated: DateTime.parse(record.get<String>('updated')),
     );
   }
 

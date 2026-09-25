@@ -1,15 +1,11 @@
 // lib/feat_intro/splash_screen.dart
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../feat_auth/pages/login_page.dart';
-import '../../feat_home/pages/home_page.dart';
-import '../../../services/auth_service.dart';
 import '../../../core/widgets/no_connection_widget.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -53,6 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkConnectivity() async {
     final connectivityResult = await (Connectivity().checkConnectivity());
+    if (!mounted) return;
     setState(() {
       _isConnected = !connectivityResult.contains(ConnectivityResult.none);
     });
@@ -103,26 +100,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   ? TextButton(
                       onPressed: () async {
                         final prefs = await SharedPreferences.getInstance();
-                        await prefs.setBool('hasSeenOnboarding', true);
+                        prefs.setBool('hasSeenOnboarding', true);
 
                         if (!mounted) return;
-                        Navigator.of(context).pushReplacementNamed('/home');
 
-                        /*
-                        final authService = Provider.of<AuthService>(
-                          context,
-                          listen: false,
-                        );
-                        if (authService.currentUser != null) {
-                          Navigator.of(context).pushReplacementNamed('/home');
-                        } else {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => const LoginPage(),
-                            ),
-                          );
-                        }
-                        */
+                        Navigator.of(context).pushReplacementNamed('/home');
                       },
                       style: TextButton.styleFrom(
                         foregroundColor: _primaryTextColor,
