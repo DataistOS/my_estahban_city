@@ -1,7 +1,10 @@
 // lib/features/feat_bottom_nav/widgets/custom_bottom_nav_bar.dart
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:my_estahban_city/features/feat_auth/pages/profile_page.dart';
+import 'package:my_estahban_city/services/auth_service.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final Function(String? categoryId, String title) onCategorySelected;
@@ -48,9 +51,17 @@ class CustomBottomNavBar extends StatelessWidget {
             icon: const Icon(Icons.person_outline, color: Color(0xFF333333)),
             tooltip: 'پروفایل من',
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              final authService = Provider.of<AuthService>(
+                context,
+                listen: false,
               );
+              if (authService.currentUser == null) {
+                Navigator.of(context).pushNamed('/login');
+              } else {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
+              }
             },
           ),
         ],

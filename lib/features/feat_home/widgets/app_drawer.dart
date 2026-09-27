@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 
 import 'package:my_estahban_city/features/feat_auth/pages/profile_page.dart';
 import 'package:my_estahban_city/features/feat_orders/pages/order_history_page.dart';
 import 'package:my_estahban_city/features/feat_about/pages/about_page.dart';
+import 'package:my_estahban_city/services/auth_service.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -50,7 +52,22 @@ class AppDrawer extends StatelessWidget {
                     context,
                     icon: Icons.person_outline_rounded,
                     title: 'پروفایل ‌من',
-                    onTap: () => _navigateTo(context, const ProfilePage()),
+                    onTap: () {
+                      Navigator.of(context).pop(); // بستن منوی کشویی
+                      final authService = Provider.of<AuthService>(
+                        context,
+                        listen: false,
+                      );
+                      if (authService.currentUser == null) {
+                        Navigator.of(context).pushNamed('/login');
+                      } else {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const ProfilePage(),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   _buildDrawerItem(
                     context,

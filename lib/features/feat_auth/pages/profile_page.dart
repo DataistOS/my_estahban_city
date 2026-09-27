@@ -15,56 +15,12 @@ class ProfilePage extends StatelessWidget {
     final user = authService.currentUser;
 
     if (user == null) {
-      return Scaffold(
-        backgroundColor: const Color(0xFFDDE3F1),
-        appBar: AppBar(
-          title: const Text(
-            'پروفایل کاربری',
-            style: TextStyle(fontFamily: 'Vazir', color: Color(0xFF333333)),
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'شما وارد حساب کاربری نشده‌اید.',
-                style: TextStyle(
-                  fontFamily: 'Vazir',
-                  fontSize: 18,
-                  color: Color(0xFF333333),
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/login');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF333333),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 10,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'ورود / ثبت‌نام',
-                  style: TextStyle(
-                    fontFamily: 'Vazir',
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushReplacementNamed('/login');
+      });
+      return const Scaffold(
+        backgroundColor: Color(0xFFDDE3F1),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -88,7 +44,6 @@ class ProfilePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildProfileHeader(user.name ?? 'شهروند استهبان'),
-
             const SizedBox(height: 16),
 
             Card(
@@ -175,7 +130,6 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  // حذف context اضافه
   Widget _buildProfileHeader(String name) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),

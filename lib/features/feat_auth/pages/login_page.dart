@@ -95,13 +95,21 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFDDE3F1),
-      body: Consumer<AuthService>(
-        builder: (context, authService, child) {
-          return Directionality(
-            textDirection: TextDirection.rtl,
-            child: Center(
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFDDE3F1),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Color(0xFF333333)),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: Consumer<AuthService>(
+          builder: (context, authService, child) {
+            return Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0),
                 child: Form(
@@ -112,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       RepaintBoundary(
                         child: SizedBox(
-                          height: 250,
+                          height: 220,
                           child: Transform(
                             alignment: Alignment.center,
                             transform: Matrix4.identity()..scale(-1.0, 1.0),
@@ -134,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                           fontFamily: 'Vazir',
                         ),
                       ),
-                      const SizedBox(height: 48),
+                      const SizedBox(height: 36),
 
                       TextFormField(
                         controller: _nationalCodeController,
@@ -278,9 +286,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
