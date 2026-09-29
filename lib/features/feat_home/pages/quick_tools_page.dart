@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:my_estahban_city/services/auth_service.dart';
 import 'package:my_estahban_city/features/feat_scanner/pages/product_scanner_page.dart';
 import 'package:my_estahban_city/features/feat_product/pages/brands_page.dart';
+import 'package:my_estahban_city/features/feat_search/pages/advanced_search_page.dart';
 
 class QuickToolsPage extends StatelessWidget {
   const QuickToolsPage({super.key});
@@ -136,6 +137,90 @@ class QuickToolsPage extends StatelessWidget {
                           const SizedBox(height: 8),
                           const Text(
                             'برندها و مدل‌ها',
+                            style: TextStyle(
+                              fontFamily: 'Vazir',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  InkWell(
+                    onTap: () {
+                      final currentUser = authService.currentUser;
+                      final bool currentIsVip =
+                          currentUser != null &&
+                          currentUser.tier != null &&
+                          currentUser.tier != 'free';
+
+                      if (!currentIsVip) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'جستجوی پیشرفته نیازمند اشتراک VIP است.',
+                              style: TextStyle(fontFamily: 'Vazir'),
+                            ),
+                            backgroundColor: Colors.orange,
+                          ),
+                        );
+                        return;
+                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AdvancedSearchPage(),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.03),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.manage_search,
+                                color: Colors.blue,
+                                size: 28,
+                              ),
+                              SizedBox(width: 8),
+                              Chip(
+                                label: Text(
+                                  'VIP',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 9,
+                                    fontFamily: 'Vazir',
+                                  ),
+                                ),
+                                backgroundColor: Colors.amber,
+                                visualDensity: VisualDensity.compact,
+                                padding: EdgeInsets.zero,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'جستجوی پیشرفته',
                             style: TextStyle(
                               fontFamily: 'Vazir',
                               fontWeight: FontWeight.bold,

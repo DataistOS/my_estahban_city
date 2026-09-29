@@ -19,7 +19,7 @@ class SearchHistoryService {
           .create(body: {'user_id': userId, 'search_query': formattedQuery});
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('خطا در ذخیره تاریخچه جستجو: $e');
+        debugPrint('خطا: $e');
       }
     }
   }
