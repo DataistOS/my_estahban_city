@@ -7,6 +7,7 @@ import 'package:my_estahban_city/services/product_service.dart';
 import 'package:my_estahban_city/core/widgets/add_to_cart_button.dart';
 import 'package:my_estahban_city/features/feat_product/pages/full_screen_image_page.dart';
 import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
+import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
 
 class ProductDetailPage extends StatefulWidget {
   static const String routeName = '/product-detail';
@@ -27,10 +28,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   void initState() {
     super.initState();
-    _relatedProductsFuture = productService.getRelatedProducts(
-      widget.product.category,
-      widget.product.id,
-    );
+    _loadRelatedProducts();
+  }
+
+  void _loadRelatedProducts() {
+    setState(() {
+      _relatedProductsFuture = productService.getRelatedProducts(
+        widget.product.category,
+        widget.product.id,
+      );
+    });
   }
 
   List<String> _getAllImages() {
@@ -76,7 +83,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        // اصلاح با withValues به جای withOpacity
                         color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
@@ -115,7 +121,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      // اصلاح با withValues به جای withOpacity
                       color: Colors.black.withValues(alpha: 0.03),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
@@ -203,13 +208,43 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               child: CircularProgressIndicator(),
                             );
                           } else if (snapshot.hasError) {
+                            final errorStr = snapshot.error.toString();
+                            if (errorStr.contains('SocketException') ||
+                                errorStr.contains('statusCode: 0') ||
+                                errorStr.contains('Failed host lookup')) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'خطای اتصال به شبکه',
+                                      style: TextStyle(
+                                        fontFamily: 'Vazir',
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: _loadRelatedProducts,
+                                      child: const Text(
+                                        'تلاش مجدد',
+                                        style: TextStyle(fontFamily: 'Vazir'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
                             return Center(
-                              child: Text(
-                                'خطا در بارگذاری محصولات مشابه',
-                                style: TextStyle(
-                                  fontFamily: 'Vazir',
-                                  color: Colors.grey[600],
-                                  fontSize: 12,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  getFriendlyErrorMessage(snapshot.error),
+                                  style: TextStyle(
+                                    fontFamily: 'Vazir',
+                                    color: Colors.grey[600],
+                                    fontSize: 12,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
                             );

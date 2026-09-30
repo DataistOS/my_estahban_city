@@ -6,6 +6,8 @@ import 'package:my_estahban_city/features/feat_product/models/product_model.dart
 import 'package:my_estahban_city/features/feat_product/pages/product_detail_page.dart';
 import 'package:my_estahban_city/core/widgets/add_to_cart_button.dart';
 import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
+import 'package:my_estahban_city/core/widgets/no_connection_widget.dart';
+import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
 
 class HomeProductList extends StatelessWidget {
   final Future<List<ProductModel>> productsFuture;
@@ -88,10 +90,21 @@ class HomeProductList extends StatelessWidget {
             },
           );
         } else if (snapshot.hasError) {
+          final errorStr = snapshot.error.toString();
+          if (errorStr.contains('SocketException') ||
+              errorStr.contains('statusCode: 0') ||
+              errorStr.contains('Failed host lookup')) {
+            return const NoConnectionWidget();
+          }
+
           return Center(
-            child: Text(
-              'خطا: ${snapshot.error}',
-              style: const TextStyle(fontFamily: 'Vazir'),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text(
+                getFriendlyErrorMessage(snapshot.error),
+                style: const TextStyle(fontFamily: 'Vazir'),
+                textAlign: TextAlign.center,
+              ),
             ),
           );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

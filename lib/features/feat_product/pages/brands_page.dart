@@ -6,6 +6,8 @@ import 'package:my_estahban_city/features/feat_product/pages/product_detail_page
 import 'package:my_estahban_city/services/product_service.dart';
 import 'package:my_estahban_city/core/widgets/add_to_cart_button.dart';
 import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
+import 'package:my_estahban_city/core/widgets/no_connection_widget.dart';
+import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
 
 class BrandsPage extends StatefulWidget {
   const BrandsPage({super.key});
@@ -94,10 +96,20 @@ class _BrandsPageState extends State<BrandsPage>
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
+          final errorStr = snapshot.error.toString();
+          if (errorStr.contains('SocketException') ||
+              errorStr.contains('statusCode: 0') ||
+              errorStr.contains('Failed host lookup')) {
+            return const NoConnectionWidget();
+          }
           return Center(
-            child: Text(
-              'خطا: ${snapshot.error}',
-              style: const TextStyle(fontFamily: 'Vazir'),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text(
+                getFriendlyErrorMessage(snapshot.error),
+                style: const TextStyle(fontFamily: 'Vazir'),
+                textAlign: TextAlign.center,
+              ),
             ),
           );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -187,10 +199,20 @@ class _BrandsPageState extends State<BrandsPage>
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
+          final errorStr = snapshot.error.toString();
+          if (errorStr.contains('SocketException') ||
+              errorStr.contains('statusCode: 0') ||
+              errorStr.contains('Failed host lookup')) {
+            return const NoConnectionWidget();
+          }
           return Center(
-            child: Text(
-              'خطا: ${snapshot.error}',
-              style: const TextStyle(fontFamily: 'Vazir'),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text(
+                getFriendlyErrorMessage(snapshot.error),
+                style: const TextStyle(fontFamily: 'Vazir'),
+                textAlign: TextAlign.center,
+              ),
             ),
           );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -295,10 +317,20 @@ class BrandProductsPage extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
+              final errorStr = snapshot.error.toString();
+              if (errorStr.contains('SocketException') ||
+                  errorStr.contains('statusCode: 0') ||
+                  errorStr.contains('Failed host lookup')) {
+                return const NoConnectionWidget();
+              }
               return Center(
-                child: Text(
-                  'خطا: ${snapshot.error}',
-                  style: const TextStyle(fontFamily: 'Vazir'),
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Text(
+                    getFriendlyErrorMessage(snapshot.error),
+                    style: const TextStyle(fontFamily: 'Vazir'),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -364,7 +396,6 @@ class BrandProductsPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    // لیست محصولات مربوط به این مدل
                     ...modelProducts.map((product) {
                       return Card(
                         elevation: 2,
@@ -467,10 +498,20 @@ class ModelProductsPage extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
+              final errorStr = snapshot.error.toString();
+              if (errorStr.contains('SocketException') ||
+                  errorStr.contains('statusCode: 0') ||
+                  errorStr.contains('Failed host lookup')) {
+                return const NoConnectionWidget();
+              }
               return Center(
-                child: Text(
-                  'خطا: ${snapshot.error}',
-                  style: const TextStyle(fontFamily: 'Vazir'),
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Text(
+                    getFriendlyErrorMessage(snapshot.error),
+                    style: const TextStyle(fontFamily: 'Vazir'),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

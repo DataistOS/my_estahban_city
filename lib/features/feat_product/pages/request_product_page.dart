@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:my_estahban_city/services/auth_service.dart';
 import 'package:my_estahban_city/services/request_product_service.dart';
+import 'package:my_estahban_city/core/widgets/no_connection_widget.dart';
+import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
 
 class RequestProductPage extends StatefulWidget {
   const RequestProductPage({super.key});
@@ -16,6 +18,7 @@ class _RequestProductPageState extends State<RequestProductPage> {
   final _requestController = TextEditingController();
   final RequestProductService _requestService = RequestProductService();
   bool _isLoading = false;
+  Object? _pageError;
 
   @override
   void dispose() {
@@ -50,6 +53,7 @@ class _RequestProductPageState extends State<RequestProductPage> {
 
     setState(() {
       _isLoading = true;
+      _pageError = null;
     });
 
     try {
@@ -67,10 +71,16 @@ class _RequestProductPageState extends State<RequestProductPage> {
         _requestController.clear();
       }
     } catch (e) {
-      _showSnackBar(
-        'خطا در ارسال درخواست: ${e.toString()}',
-        backgroundColor: Colors.red,
-      );
+      final errorStr = e.toString();
+      if (errorStr.contains('SocketException') ||
+          errorStr.contains('statusCode: 0') ||
+          errorStr.contains('Failed host lookup')) {
+        setState(() {
+          _pageError = e;
+        });
+      } else {
+        _showSnackBar(getFriendlyErrorMessage(e), backgroundColor: Colors.red);
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -91,51 +101,74 @@ class _RequestProductPageState extends State<RequestProductPage> {
             style: TextStyle(fontFamily: 'Vazir'),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'اگر محصول مورد نظر شما در فروشگاه موجود نیست، می‌توانید از این طریق آن را درخواست دهید تا در صورت امکان به محصولات اضافه شود.',
-                style: TextStyle(fontFamily: 'Vazir', fontSize: 16),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _requestController,
-                maxLines: 5,
-                style: const TextStyle(fontFamily: 'Vazir'),
-                decoration: InputDecoration(
-                  hintText:
-                      'نام محصول یا توضیحات مربوط به درخواست خود را اینجا بنویسید...',
-                  hintStyle: const TextStyle(fontFamily: 'Vazir'),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 20),
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton.icon(
-                      onPressed: _submitRequest,
-                      icon: const Icon(Icons.send),
-                      label: const Text(
-                        'ارسال درخواست',
-                        style: TextStyle(fontFamily: 'Vazir'),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+        body: _pageError != null
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Expanded(child: NoConnectionWidget()),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _pageError = null;
+                          });
+                        },
+                        child: const Text(
+                          'تلاش مجدد',
+                          style: TextStyle(fontFamily: 'Vazir'),
                         ),
                       ),
+                    ],
+                  ),
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      'اگر محصول مورد نظر شما در فروشگاه موجود نیست، می‌توانید از این طریق آن را درخواست دهید تا در صورت امکان به محصولات اضافه شود.',
+                      style: TextStyle(fontFamily: 'Vazir', fontSize: 16),
                     ),
-            ],
-          ),
-        ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _requestController,
+                      maxLines: 5,
+                      style: const TextStyle(fontFamily: 'Vazir'),
+                      decoration: InputDecoration(
+                        hintText:
+                            'نام محصول یا توضیحات مربوط به درخواست خود را اینجا بنویسید...',
+                        hintStyle: const TextStyle(fontFamily: 'Vazir'),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    _isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : ElevatedButton.icon(
+                            onPressed: _submitRequest,
+                            icon: const Icon(Icons.send),
+                            label: const Text(
+                              'ارسال درخواست',
+                              style: TextStyle(fontFamily: 'Vazir'),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
+              ),
       ),
     );
   }

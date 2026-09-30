@@ -1,4 +1,4 @@
-// lib/features/feat_product/cart_page.dart
+// lib/features/feat_cart/pages/cart_page.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -6,6 +6,8 @@ import 'package:my_estahban_city/features/feat_cart/models/cart_model.dart';
 import 'package:my_estahban_city/features/feat_product/models/product_model.dart';
 import 'package:my_estahban_city/services/cart_service.dart';
 import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
+import 'package:my_estahban_city/core/widgets/no_connection_widget.dart';
+import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -62,9 +64,14 @@ class _CartPageState extends State<CartPage> {
     } catch (e) {
       if (!mounted) return;
 
+      final errorMessage = getFriendlyErrorMessage(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('خطا در ثبت سفارش.', textDirection: TextDirection.rtl),
+        SnackBar(
+          content: Text(
+            errorMessage,
+            textDirection: TextDirection.rtl,
+            style: const TextStyle(fontFamily: 'Vazir'),
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -91,7 +98,24 @@ class _CartPageState extends State<CartPage> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Center(child: Text('خطا: ${snapshot.error}'));
+              final errorStr = snapshot.error.toString();
+              // بررسی قطع اینترنت
+              if (errorStr.contains('SocketException') ||
+                  errorStr.contains('statusCode: 0') ||
+                  errorStr.contains('Failed host lookup')) {
+                return const NoConnectionWidget();
+              }
+
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Text(
+                    getFriendlyErrorMessage(snapshot.error),
+                    style: const TextStyle(fontFamily: 'Vazir'),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
             } else if (!snapshot.hasData || snapshot.data!.items.isEmpty) {
               return const Center(
                 child: Text(

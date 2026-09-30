@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:my_estahban_city/features/feat_product/models/product_model.dart';
 import 'package:my_estahban_city/features/feat_product/pages/product_detail_page.dart';
 import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
+import 'package:my_estahban_city/core/widgets/no_connection_widget.dart';
+import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
 import 'package:my_estahban_city/services/pocketbase_instance.dart';
 import 'package:my_estahban_city/features/feat_search/services/search_history_service.dart';
 
@@ -23,6 +25,7 @@ class _AdvancedSearchPageState extends State<AdvancedSearchPage> {
   List<ProductModel> _searchResults = [];
   List<String> _availableBrands = [];
   bool _isLoading = false;
+  Object? _pageError;
 
   // فیلترها
   String? _selectedBrand;
@@ -35,6 +38,16 @@ class _AdvancedSearchPageState extends State<AdvancedSearchPage> {
     super.initState();
     _fetchBrands();
     _performSearch();
+  }
+
+  void _showSnackBar(String message, {Color backgroundColor = Colors.black}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: const TextStyle(fontFamily: 'Vazir')),
+        backgroundColor: backgroundColor,
+      ),
+    );
   }
 
   Future<void> _fetchBrands() async {
@@ -61,6 +74,7 @@ class _AdvancedSearchPageState extends State<AdvancedSearchPage> {
   Future<void> _performSearch() async {
     setState(() {
       _isLoading = true;
+      _pageError = null;
     });
 
     try {
@@ -108,10 +122,21 @@ class _AdvancedSearchPageState extends State<AdvancedSearchPage> {
         });
       }
     } catch (e) {
-      debugPrint('Error searching products: $e');
+      final errorStr = e.toString();
       if (mounted) {
         setState(() {
           _isLoading = false;
+          // بررسی قطع اینترنت
+          if (errorStr.contains('SocketException') ||
+              errorStr.contains('statusCode: 0') ||
+              errorStr.contains('Failed host lookup')) {
+            _pageError = e;
+          } else {
+            _showSnackBar(
+              getFriendlyErrorMessage(e),
+              backgroundColor: Colors.red,
+            );
+          }
         });
       }
     }
@@ -298,129 +323,152 @@ class _AdvancedSearchPageState extends State<AdvancedSearchPage> {
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
+        body: _pageError != null
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Expanded(child: NoConnectionWidget()),
+                      ElevatedButton(
+                        onPressed: _performSearch,
+                        child: const Text(
+                          'تلاش مجدد',
+                          style: TextStyle(fontFamily: 'Vazir'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : Column(
                 children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: (val) => _performSearch(),
-                      decoration: InputDecoration(
-                        labelText: 'جستجو در نام، مدل، توضیحات...',
-                        labelStyle: const TextStyle(
-                          fontFamily: 'Vazir',
-                          fontSize: 13,
-                        ),
-                        prefixIcon: const Icon(Icons.search),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    style: IconButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.all(12),
-                    ),
-                    icon: const Icon(Icons.filter_list, color: Colors.blue),
-                    onPressed: _showFilterBottomSheet,
-                  ),
-                ],
-              ),
-            ),
-
-            // لیست نتایج
-            Expanded(
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : _searchResults.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'محصولی با این مشخصات یافت نشد.',
-                        style: TextStyle(
-                          fontFamily: 'Vazir',
-                          color: Colors.grey,
-                        ),
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: _searchResults.length,
-                      itemBuilder: (context, index) {
-                        final product = _searchResults[index];
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.all(8),
-                            leading: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: SizedBox(
-                                width: 60,
-                                height: 60,
-                                child: CachedImageWidget(
-                                  imageUrl: product.mainImage,
-                                ),
-                              ),
-                            ),
-                            title: Text(
-                              product.name,
-                              style: const TextStyle(
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _searchController,
+                            onChanged: (val) => _performSearch(),
+                            decoration: InputDecoration(
+                              labelText: 'جستجو در نام، مدل، توضیحات...',
+                              labelStyle: const TextStyle(
                                 fontFamily: 'Vazir',
-                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                              prefixIcon: const Icon(Icons.search),
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
                               ),
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (product.brand != null &&
-                                    product.brand!.isNotEmpty)
-                                  Text(
-                                    'برند: ${product.brand}',
-                                    style: const TextStyle(
-                                      fontFamily: 'Vazir',
-                                      fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.all(12),
+                          ),
+                          icon: const Icon(
+                            Icons.filter_list,
+                            color: Colors.blue,
+                          ),
+                          onPressed: _showFilterBottomSheet,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // لیست نتایج
+                  Expanded(
+                    child: _isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : _searchResults.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'محصولی با این مشخصات یافت نشد.',
+                              style: TextStyle(
+                                fontFamily: 'Vazir',
+                                color: Colors.grey,
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: _searchResults.length,
+                            itemBuilder: (context, index) {
+                              final product = _searchResults[index];
+                              return Card(
+                                margin: const EdgeInsets.only(bottom: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: ListTile(
+                                  contentPadding: const EdgeInsets.all(8),
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: SizedBox(
+                                      width: 60,
+                                      height: 60,
+                                      child: CachedImageWidget(
+                                        imageUrl: product.mainImage,
+                                      ),
                                     ),
                                   ),
-                                Text(
-                                  '${product.price.toStringAsFixed(0)} تومان',
-                                  style: const TextStyle(
-                                    fontFamily: 'Vazir',
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
+                                  title: Text(
+                                    product.name,
+                                    style: const TextStyle(
+                                      fontFamily: 'Vazir',
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProductDetailPage(product: product),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (product.brand != null &&
+                                          product.brand!.isNotEmpty)
+                                        Text(
+                                          'برند: ${product.brand}',
+                                          style: const TextStyle(
+                                            fontFamily: 'Vazir',
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      Text(
+                                        '${product.price.toStringAsFixed(0)} تومان',
+                                        style: const TextStyle(
+                                          fontFamily: 'Vazir',
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ProductDetailPage(product: product),
+                                      ),
+                                    );
+                                  },
                                 ),
                               );
                             },
                           ),
-                        );
-                      },
-                    ),
-            ),
-          ],
-        ),
+                  ),
+                ],
+              ),
       ),
     );
   }

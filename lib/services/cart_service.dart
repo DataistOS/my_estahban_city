@@ -8,6 +8,7 @@ import 'package:my_estahban_city/features/feat_cart/models/cart_model.dart';
 import 'package:my_estahban_city/features/feat_auth/models/user_model.dart';
 import 'package:my_estahban_city/features/feat_product/models/product_model.dart';
 import 'package:my_estahban_city/features/feat_product/models/order_model.dart';
+import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
 
 class CartService {
   final PocketBase pb = pocketBaseInstance;
@@ -24,11 +25,16 @@ class CartService {
           .getFirstListItem('user = "${currentUser.id}"');
       return CartModel.fromRecord(record);
     } catch (e) {
-      if (e is ClientException && e.response['code'] == 404) {
+      if (e is ClientException && e.statusCode == 404) {
         final newRecord = await pb
             .collection('cart')
             .create(body: {'user': currentUser.id, 'items': []});
         return CartModel.fromRecord(newRecord);
+      }
+      if (kDebugMode) {
+        debugPrint(
+          'Error fetching cart: ${getFriendlyErrorMessage(e)} - Details: $e',
+        );
       }
       rethrow;
     }
@@ -86,11 +92,13 @@ class CartService {
         updated: DateTime.parse(record.get<String>('updated')),
       );
     } catch (e) {
-      if (e is ClientException && e.response['code'] == 404) {
+      if (e is ClientException && e.statusCode == 404) {
         return null;
       }
       if (kDebugMode) {
-        debugPrint('Error fetching cart with products: $e');
+        debugPrint(
+          'Error fetching cart with products: ${getFriendlyErrorMessage(e)} - Details: $e',
+        );
       }
       rethrow;
     }
@@ -128,7 +136,7 @@ class CartService {
             body: {'items': currentCart.items.map((e) => e.toJson()).toList()},
           );
     } on ClientException catch (e) {
-      if (e.response['code'] == 404) {
+      if (e.statusCode == 404) {
         await pb
             .collection('cart')
             .create(
@@ -143,8 +151,18 @@ class CartService {
               },
             );
       } else {
+        if (kDebugMode) {
+          debugPrint(
+            'Error adding item to cart: ${getFriendlyErrorMessage(e)} - Details: $e',
+          );
+        }
         rethrow;
       }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Unknown Error adding item to cart: $e');
+      }
+      rethrow;
     }
   }
 
@@ -154,19 +172,28 @@ class CartService {
         : null;
     if (currentUser == null) return;
 
-    final cartRecord = await pb
-        .collection('cart')
-        .getFirstListItem('user = "${currentUser.id}"');
+    try {
+      final cartRecord = await pb
+          .collection('cart')
+          .getFirstListItem('user = "${currentUser.id}"');
 
-    final currentCart = CartModel.fromRecord(cartRecord);
-    currentCart.items.removeWhere((item) => item.productId == productId);
+      final currentCart = CartModel.fromRecord(cartRecord);
+      currentCart.items.removeWhere((item) => item.productId == productId);
 
-    await pb
-        .collection('cart')
-        .update(
-          cartRecord.id,
-          body: {'items': currentCart.items.map((e) => e.toJson()).toList()},
+      await pb
+          .collection('cart')
+          .update(
+            cartRecord.id,
+            body: {'items': currentCart.items.map((e) => e.toJson()).toList()},
+          );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(
+          'Error removing item from cart: ${getFriendlyErrorMessage(e)} - Details: $e',
         );
+      }
+      rethrow;
+    }
   }
 
   Future<void> updateItemQuantity(String productId, int newQuantity) async {
@@ -175,27 +202,38 @@ class CartService {
         : null;
     if (currentUser == null) return;
 
-    final cartRecord = await pb
-        .collection('cart')
-        .getFirstListItem('user = "${currentUser.id}"');
-
-    final currentCart = CartModel.fromRecord(cartRecord);
-    final itemIndex = currentCart.items.indexWhere(
-      (item) => item.productId == productId,
-    );
-
-    if (itemIndex != -1) {
-      if (newQuantity <= 0) {
-        currentCart.items.removeAt(itemIndex);
-      } else {
-        currentCart.items[itemIndex].quantity = newQuantity;
-      }
-      await pb
+    try {
+      final cartRecord = await pb
           .collection('cart')
-          .update(
-            cartRecord.id,
-            body: {'items': currentCart.items.map((e) => e.toJson()).toList()},
-          );
+          .getFirstListItem('user = "${currentUser.id}"');
+
+      final currentCart = CartModel.fromRecord(cartRecord);
+      final itemIndex = currentCart.items.indexWhere(
+        (item) => item.productId == productId,
+      );
+
+      if (itemIndex != -1) {
+        if (newQuantity <= 0) {
+          currentCart.items.removeAt(itemIndex);
+        } else {
+          currentCart.items[itemIndex].quantity = newQuantity;
+        }
+        await pb
+            .collection('cart')
+            .update(
+              cartRecord.id,
+              body: {
+                'items': currentCart.items.map((e) => e.toJson()).toList(),
+              },
+            );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(
+          'Error updating item quantity: ${getFriendlyErrorMessage(e)} - Details: $e',
+        );
+      }
+      rethrow;
     }
   }
 
@@ -205,11 +243,20 @@ class CartService {
         : null;
     if (currentUser == null) return;
 
-    final cartRecord = await pb
-        .collection('cart')
-        .getFirstListItem('user = "${currentUser.id}"');
+    try {
+      final cartRecord = await pb
+          .collection('cart')
+          .getFirstListItem('user = "${currentUser.id}"');
 
-    await pb.collection('cart').update(cartRecord.id, body: {'items': []});
+      await pb.collection('cart').update(cartRecord.id, body: {'items': []});
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(
+          'Error clearing cart: ${getFriendlyErrorMessage(e)} - Details: $e',
+        );
+      }
+      rethrow;
+    }
   }
 
   Future<void> checkout(
@@ -221,24 +268,33 @@ class CartService {
         : null;
     if (currentUser == null) return;
 
-    final cartRecord = await pb
-        .collection('cart')
-        .getFirstListItem('user = "${currentUser.id}"');
-    final currentCart = CartModel.fromRecord(cartRecord);
+    try {
+      final cartRecord = await pb
+          .collection('cart')
+          .getFirstListItem('user = "${currentUser.id}"');
+      final currentCart = CartModel.fromRecord(cartRecord);
 
-    await pb
-        .collection('orders')
-        .create(
-          body: {
-            'user': currentUser.id,
-            'items': currentCart.items.map((e) => e.toJson()).toList(),
-            'total_amount': totalAmount,
-            'shipping_address': shippingAddress,
-            'status': 'pending',
-          },
+      await pb
+          .collection('orders')
+          .create(
+            body: {
+              'user': currentUser.id,
+              'items': currentCart.items.map((e) => e.toJson()).toList(),
+              'total_amount': totalAmount,
+              'shipping_address': shippingAddress,
+              'status': 'pending',
+            },
+          );
+
+      await clearCart();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(
+          'Error during checkout: ${getFriendlyErrorMessage(e)} - Details: $e',
         );
-
-    await clearCart();
+      }
+      rethrow;
+    }
   }
 
   Future<List<OrderModel>> getOrders() async {
@@ -247,10 +303,19 @@ class CartService {
         : null;
     if (currentUser == null) return [];
 
-    final records = await pb
-        .collection('orders')
-        .getFullList(filter: 'user = "${currentUser.id}"', sort: '-created');
+    try {
+      final records = await pb
+          .collection('orders')
+          .getFullList(filter: 'user = "${currentUser.id}"', sort: '-created');
 
-    return records.map((record) => OrderModel.fromRecord(record)).toList();
+      return records.map((record) => OrderModel.fromRecord(record)).toList();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(
+          'Error fetching orders: ${getFriendlyErrorMessage(e)} - Details: $e',
+        );
+      }
+      rethrow;
+    }
   }
 }

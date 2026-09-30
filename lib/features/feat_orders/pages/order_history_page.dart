@@ -9,6 +9,8 @@ import 'package:my_estahban_city/features/feat_product/models/product_model.dart
 import 'package:my_estahban_city/services/cart_service.dart';
 import 'package:my_estahban_city/services/pocketbase_instance.dart';
 import 'package:my_estahban_city/core/widgets/cached_image_widget.dart';
+import 'package:my_estahban_city/core/widgets/no_connection_widget.dart';
+import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
 
 class OrderHistoryPage extends StatefulWidget {
   const OrderHistoryPage({super.key});
@@ -165,7 +167,24 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Center(child: Text('خطا: ${snapshot.error}'));
+              final errorStr = snapshot.error.toString();
+              // بررسی قطع اینترنت
+              if (errorStr.contains('SocketException') ||
+                  errorStr.contains('statusCode: 0') ||
+                  errorStr.contains('Failed host lookup')) {
+                return const NoConnectionWidget();
+              }
+
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Text(
+                    getFriendlyErrorMessage(snapshot.error),
+                    style: const TextStyle(fontFamily: 'Vazir'),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Column(
                 children: [

@@ -1,10 +1,10 @@
 // lib/services/auth_service.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:pocketbase/pocketbase.dart';
 
 import 'package:my_estahban_city/features/feat_auth/models/user_model.dart';
 import 'package:my_estahban_city/services/pocketbase_instance.dart';
+import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
 
 class AuthService with ChangeNotifier {
   UserModel? _currentUser;
@@ -66,17 +66,10 @@ class AuthService with ChangeNotifier {
       if (kDebugMode) {
         debugPrint('Login successful, user: $_currentUser');
       }
-    } on ClientException catch (e) {
-      _errorMessage = e.response['message'] ?? 'کد ملی یا رمز عبور اشتباه است.';
-      if (kDebugMode) {
-        debugPrint(
-          'PocketBase Client Error: Status ${e.response['status'] ?? 400} - ${e.response['message']}',
-        );
-      }
     } catch (e) {
-      _errorMessage = 'خطای ناشناخته رخ داد. لطفاً دوباره تلاش کنید.';
+      _errorMessage = getFriendlyErrorMessage(e);
       if (kDebugMode) {
-        debugPrint('Unknown Error Details: $e');
+        debugPrint('Login Error Details: $e');
       }
     } finally {
       _isLoading = false;
@@ -96,13 +89,6 @@ class AuthService with ChangeNotifier {
       if (kDebugMode) {
         debugPrint('Registration successful, user: $_currentUser');
       }
-    } on ClientException catch (e) {
-      _errorMessage = e.response['message'] ?? 'خطا در ثبت‌نام رخ داد.';
-      if (kDebugMode) {
-        debugPrint(
-          'PocketBase Client Error: Status ${e.response['status'] ?? 400} - ${e.response['message']}',
-        );
-      }
     } catch (e) {
       if (_currentUser != null) {
         if (kDebugMode) {
@@ -111,9 +97,9 @@ class AuthService with ChangeNotifier {
           );
         }
       } else {
-        _errorMessage = 'خطای ناشناخته در ثبت‌نام. لطفاً دوباره تلاش کنید.';
+        _errorMessage = getFriendlyErrorMessage(e);
         if (kDebugMode) {
-          debugPrint('Unknown Registration Error: $e');
+          debugPrint('Registration Error Details: $e');
         }
       }
     } finally {

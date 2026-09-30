@@ -1,9 +1,9 @@
 // lib/services/request_product_service.dart
 
-import 'package:pocketbase/pocketbase.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:my_estahban_city/services/pocketbase_instance.dart';
+import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
 
 class RequestProductService {
   Future<void> createProductRequest({
@@ -30,18 +30,14 @@ class RequestProductService {
       await pocketBaseInstance
           .collection('product_requests')
           .create(body: body);
-    } on ClientException catch (e) {
-      if (kDebugMode) {
-        debugPrint('PocketBase Client Error: ${e.response['message']}');
-      }
-      throw Exception(
-        "Failed to create product request: ${e.response['message']}",
-      );
     } catch (e) {
+      final friendlyMessage = getFriendlyErrorMessage(e);
       if (kDebugMode) {
-        debugPrint('Unknown Error: $e');
+        debugPrint(
+          'PocketBase Error (Product Request): $friendlyMessage - Details: $e',
+        );
       }
-      rethrow;
+      throw Exception(friendlyMessage);
     }
   }
 }
