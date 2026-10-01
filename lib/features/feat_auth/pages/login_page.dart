@@ -27,27 +27,53 @@ class _LoginPageState extends State<LoginPage> {
 
   StateMachineController? _stateMachineController;
 
+  static RiveFile? _cachedRiveFile;
+  bool _isRiveLoaded = false;
+  Artboard? _artboard;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AuthService>(context, listen: false).clearError();
     });
+    _loadRiveFile();
   }
 
-  void _onRiveInit(Artboard artboard) {
-    _stateMachineController = artboard.stateMachineByName('Login Machine');
+  Future<void> _loadRiveFile() async {
+    if (_cachedRiveFile != null) {
+      _initArtboard(_cachedRiveFile!);
+      return;
+    }
+    try {
+      _cachedRiveFile = await RiveFile.asset('assets/animations/bear.riv');
+      _initArtboard(_cachedRiveFile!);
+    } catch (_) {
+    }
+  }
 
-    if (_stateMachineController != null) {
-      artboard.addController(_stateMachineController!);
+  void _initArtboard(RiveFile file) {
+    final artboard = file.mainArtboard;
+    final controller = StateMachineController.fromArtboard(
+      artboard,
+      'Login Machine',
+    );
 
-      _isChecking =
-          _stateMachineController!.findInput<bool>('isChecking') as SMIBool?;
-      _isHandsUp =
-          _stateMachineController!.findInput<bool>('isHandsUp') as SMIBool?;
-      _isSuccess =
-          _stateMachineController!.findInput<bool>('isSuccess') as SMIBool?;
-      _isFail = _stateMachineController!.findInput<bool>('isFail') as SMIBool?;
+    if (controller != null) {
+      artboard.addController(controller);
+      _stateMachineController = controller;
+
+      _isChecking = controller.findInput<bool>('isChecking') as SMIBool?;
+      _isHandsUp = controller.findInput<bool>('isHandsUp') as SMIBool?;
+      _isSuccess = controller.findInput<bool>('isSuccess') as SMIBool?;
+      _isFail = controller.findInput<bool>('isFail') as SMIBool?;
+    }
+
+    if (mounted) {
+      setState(() {
+        _artboard = artboard;
+        _isRiveLoaded = true;
+      });
     }
   }
 
@@ -124,11 +150,12 @@ class _LoginPageState extends State<LoginPage> {
                           child: Transform(
                             alignment: Alignment.center,
                             transform: Matrix4.identity()..scale(-1.0, 1.0),
-                            child: RiveAnimation.asset(
-                              'assets/animations/bear.riv',
-                              fit: BoxFit.contain,
-                              onInit: _onRiveInit,
-                            ),
+                            child: _isRiveLoaded && _artboard != null
+                                ? Rive(
+                                    artboard: _artboard!,
+                                    fit: BoxFit.contain,
+                                  )
+                                : const SizedBox.shrink(),
                           ),
                         ),
                       ),
@@ -235,7 +262,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       const SizedBox(height: 16),
 
-                      // Login Button
                       authService.isLoading
                           ? const Center(
                               child: CircularProgressIndicator(

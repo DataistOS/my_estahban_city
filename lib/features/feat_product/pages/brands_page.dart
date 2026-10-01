@@ -27,8 +27,30 @@ class _BrandsPageState extends State<BrandsPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _brandsFuture = _productService.getAllBrands();
+    _brandsFuture = _getBrandsSortedByLatest();
     _modelsFuture = _getAllModels();
+  }
+
+  Future<List<String>> _getBrandsSortedByLatest() async {
+    final products = await _productService.getAllProducts();
+
+    final Map<String, DateTime> brandLatestDate = {};
+
+    for (var product in products) {
+      final brand = product.brand?.trim() ?? '';
+      if (brand.isNotEmpty) {
+        final productDate = product.created ?? DateTime(2000);
+        if (!brandLatestDate.containsKey(brand) ||
+            productDate.isAfter(brandLatestDate[brand]!)) {
+          brandLatestDate[brand] = productDate;
+        }
+      }
+    }
+
+    final sortedBrands = brandLatestDate.keys.toList()
+      ..sort((a, b) => brandLatestDate[b]!.compareTo(brandLatestDate[a]!));
+
+    return sortedBrands;
   }
 
   Future<List<String>> _getAllModels() async {
@@ -122,7 +144,6 @@ class _BrandsPageState extends State<BrandsPage>
         }
 
         final brands = snapshot.data!;
-        brands.sort((a, b) => a.compareTo(b));
 
         return GridView.builder(
           padding: const EdgeInsets.all(16),
