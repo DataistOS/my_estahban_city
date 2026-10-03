@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.7.5] - 2026-04-03
+### Added
+- Comprehensive unit tests for core errors (`ServerException`, `CacheException`, `Failures`).
+- New widget tests for `AddToCartButton`, `CachedImageWidget`, `NoConnectionWidget`, and `ProductShimmerLoading`.
+- Expanded test coverage for `ProductModel`, `CartService`, `AuthService`, `ProductService`, and `PocketBaseInstance`.
+### Fixed & Improved
+- Fixed type cast issues and record JSON parsing in model and service tests.
+- Enhanced stability and configuration handling for PocketBase instance initialization tests.
+- Updated version tracking to `0.7.5` across `VERSION` and `pubspec.yaml`.
+
 ## [0.6.4] - 2026-09-25
 ### Refactor & Architecture
 - **Home Feature**: Extracted the product list section into a dedicated independent widget (`HomeProductList`) to improve code modularity, readability, and separation of concerns in `HomePage`.

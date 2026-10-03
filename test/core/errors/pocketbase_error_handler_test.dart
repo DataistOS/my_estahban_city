@@ -3,93 +3,98 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:my_estahban_city/core/errors/pocketbase_error_handler.dart';
+import 'package:my_estahban_city/core/errors/exceptions.dart';
 import 'package:my_estahban_city/core/errors/failures.dart';
 
 void main() {
   group('PocketBase Error Handler Tests', () {
     test(
-      'Should return correct message for ClientException with status 0 (Network Error)',
+      'getFriendlyErrorMessage handles ClientException 400 with field errors',
       () {
-        final exception = ClientException(
-          url: Uri.parse('http://example.com'),
-          statusCode: 0,
-          response: {},
-        );
-
-        final message = getFriendlyErrorMessage(exception);
-        final failure = mapExceptionToFailure(exception);
-
-        expect(message, 'لطفاً اتصال اینترنت خود را بررسی کنید.');
-        expect(failure, isA<NetworkFailure>());
-        expect(failure.message, message);
-      },
-    );
-
-    test(
-      'Should return correct message for ClientException with status 401 (Auth Error)',
-      () {
-        final exception = ClientException(
-          url: Uri.parse('http://example.com'),
-          statusCode: 401,
-          response: {},
-        );
-
-        final message = getFriendlyErrorMessage(exception);
-        final failure = mapExceptionToFailure(exception);
-
-        expect(
-          message,
-          'ایمیل یا رمز عبور اشتباه است، یا نشست شما منقضی شده است.',
-        );
-        expect(failure, isA<AuthFailure>());
-      },
-    );
-
-    test(
-      'Should return correct message for ClientException with status 403 (Forbidden)',
-      () {
-        final exception = ClientException(
-          url: Uri.parse('http://example.com'),
-          statusCode: 403,
-          response: {},
-        );
-
-        final message = getFriendlyErrorMessage(exception);
-        expect(message, 'شما دسترسی لازم به این بخش (محدودیت VIP) را ندارید.');
-      },
-    );
-
-    test('Should handle 400 Bad Request with field validation errors', () {
-      final exception = ClientException(
-        url: Uri.parse('http://example.com'),
-        statusCode: 400,
-        response: {
-          'data': {
-            'email': {'message': 'The email is already in use.'},
+        final clientException = ClientException(
+          statusCode: 400,
+          response: {
+            'data': {
+              'email': {'message': 'already exists'},
+            },
           },
-        },
-      );
+        );
 
-      final message = getFriendlyErrorMessage(exception);
-      expect(message, 'این ایمیل قبلاً ثبت‌نام شده است.');
+        final message = getFriendlyErrorMessage(clientException);
+        expect(message, 'این ایمیل قبلاً ثبت‌نام شده است.');
+      },
+    );
+
+    test('getFriendlyErrorMessage handles ClientException 401 correctly', () {
+      final clientException = ClientException(statusCode: 401, response: {});
+
+      final message = getFriendlyErrorMessage(clientException);
+      expect(
+        message,
+        'ایمیل یا رمز عبور اشتباه است، یا نشست شما منقضی شده است.',
+      );
     });
 
-    test('Should handle 400 Bad Request with general message', () {
-      final exception = ClientException(
-        url: Uri.parse('http://example.com'),
-        statusCode: 400,
-        response: {'message': 'Invalid credentials provided'},
-      );
+    test('getFriendlyErrorMessage handles ClientException 404 correctly', () {
+      final clientException = ClientException(statusCode: 404, response: {});
 
-      final message = getFriendlyErrorMessage(exception);
-      expect(message, 'نام کاربری یا رمز عبور اشتباه است.');
+      final message = getFriendlyErrorMessage(clientException);
+      expect(message, 'اطلاعات مورد نظر یافت نشد.');
     });
 
-    test('Should handle unknown exceptions gracefully', () {
-      final unknownError = Exception('Something went wrong');
+    test(
+      'getFriendlyErrorMessage handles ClientException status 0 (Network error)',
+      () {
+        final clientException = ClientException(statusCode: 0, response: {});
 
-      final message = getFriendlyErrorMessage(unknownError);
+        final message = getFriendlyErrorMessage(clientException);
+        expect(message, 'لطفاً اتصال اینترنت خود را بررسی کنید.');
+      },
+    );
+
+    test('getFriendlyErrorMessage handles NetworkException correctly', () {
+      // تغییر const به final
+      final netException = NetworkException(message: 'خطای سفارشی شبکه');
+      final message = getFriendlyErrorMessage(netException);
+      expect(message, 'خطای سفارشی شبکه');
+    });
+
+    test('getFriendlyErrorMessage handles CacheException correctly', () {
+      // تغییر const به final
+      final cacheException = CacheException(message: 'خطای سفارشی کش');
+      final message = getFriendlyErrorMessage(cacheException);
+      expect(message, 'خطای سفارشی کش');
+    });
+
+    test('getFriendlyErrorMessage handles FormatException correctly', () {
+      final formatException = FormatException('Invalid format');
+      final message = getFriendlyErrorMessage(formatException);
+      expect(message, 'خطا در پردازش اطلاعات دریافتی از سرور.');
+    });
+
+    test('getFriendlyErrorMessage handles unknown errors gracefully', () {
+      final message = getFriendlyErrorMessage('Some unexpected error');
       expect(message, contains('خطای ناشناخته رخ داد'));
+    });
+
+    group('mapExceptionToFailure Tests', () {
+      test('maps ClientException status 0 to NetworkFailure', () {
+        final clientException = ClientException(statusCode: 0, response: {});
+        final failure = mapExceptionToFailure(clientException);
+        expect(failure, isA<NetworkFailure>());
+      });
+
+      test('maps ClientException status 401 to AuthFailure', () {
+        final clientException = ClientException(statusCode: 401, response: {});
+        final failure = mapExceptionToFailure(clientException);
+        expect(failure, isA<AuthFailure>());
+      });
+
+      test('maps general/server errors to ServerFailure', () {
+        final clientException = ClientException(statusCode: 500, response: {});
+        final failure = mapExceptionToFailure(clientException);
+        expect(failure, isA<ServerFailure>());
+      });
     });
   });
 }

@@ -9,21 +9,17 @@ void main() {
     test('throws exception when POCKETBASE_URL is missing or empty', () async {
       dotenv.testLoad(fileInput: '');
 
-      expect(
-        () async => await initializePocketBase(),
-        throwsA(isA<Exception>()),
-      );
+      expect(() => initializePocketBase(), throwsA(isA<Exception>()));
     });
 
     test('initializes successfully when POCKETBASE_URL is provided', () async {
-      dotenv.testLoad(
-        fileInput: 'POCKETBASE_URL=https://example.pocketbase.io',
-      );
+      const testUrl = 'https://my.estahban.city';
+      dotenv.testLoad(fileInput: 'POCKETBASE_URL=$testUrl');
 
-      expect(() async => await initializePocketBase(), returnsNormally);
+      await initializePocketBase();
 
       expect(pocketBaseInstance, isNotNull);
-      expect(pocketBaseInstance.baseUrl, 'https://example.pocketbase.io');
+      expect(pocketBaseInstance.baseURL, testUrl);
     });
   });
 }
