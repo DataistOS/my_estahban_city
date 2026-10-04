@@ -1,4 +1,4 @@
-// lib/auth_wrapper.dart
+// lib/features/feat_auth/auth_wrapper.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
