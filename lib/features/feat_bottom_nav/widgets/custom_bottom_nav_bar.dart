@@ -1,4 +1,4 @@
-// lib/features/feat_bottom_nav/widgets/custom_bottom_nav_bar.dart
+// lib/features/feat_bottom_nav/widgets/custom_bottom_nav_bar_test.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

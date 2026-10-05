@@ -1,0 +1,19 @@
+# Target configuration for build_runner.
+targets:
+  $default:
+    # Restrict the build process to specific sources to prevent build_runner
+    # from scanning test files and causing unnecessary conflicts.
+    sources:
+      - lib/**
+      - pubspec.yaml
+      - "$lib$**"
+
+    # Global builder options to optimize code generation behavior.
+    builders:
+      json_serializable:
+        options:
+          # Generate explicit toJson() methods for nested serializable objects.
+          explicit_to_json: true
+          
+          # Disallow dynamic maps to enforce strict typing (Map<String, dynamic>).
+          any_map: false
