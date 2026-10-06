@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.8.0] - 2026-10-06
+### ✨ New Features
+- **Repair Clinic Module (`feat_services`)**: Added a comprehensive service and repair management system allowing users to submit, track, and manage service requests.
+- **Equipment Management**: Implemented user equipment tracking with dedicated models and bottom sheet workflows (`AddEquipmentBottomSheet`) for adding new devices/equipment seamlessly.
+- **Subscription Tier Enforcement**: Integrated strict tier-based validation to ensure only users with active, non-free subscriptions can access the repair clinic features.
+### ♻️ Improvements & Refactoring
+- **Global Typography & Directionality**: Configured default RTL text direction and applied the *Vazir* font globally via `MaterialApp` in `main.dart`.
+- **UI/UX Cleanup**: Streamlined the `QuickToolsPage` by removing redundant VIP chips, creating a cleaner and more minimalist interface.
+- **State Management Optimization**: Refactored provider lookups across service pages to use clean `context.read<T>()` syntax and improved lifecycle callbacks.
+### 📦 Dependency & Configuration Updates
+- Bumped project version to `0.8.0` (`VERSION` & `pubspec.yaml`).
+- Generated corresponding model adapters (`.g.dart`) for service models, equipment models, and service request models.
+
 ## [0.7.5] - 2026-04-03
 ### Added
 - Comprehensive unit tests for core errors (`ServerException`, `CacheException`, `Failures`).
