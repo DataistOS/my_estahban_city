@@ -221,16 +221,56 @@ class _RequestServicePageState extends State<RequestServicePage> {
                               if (!context.mounted) return;
 
                               if (success) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'درخواست شما با موفقیت ثبت شد.',
-                                      style: TextStyle(fontFamily: 'Vazir'),
-                                    ),
-                                    backgroundColor: Colors.green,
-                                  ),
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext dialogContext) {
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      title: const Row(
+                                        children: [
+                                          Icon(
+                                            Icons.check_circle,
+                                            color: Colors.green,
+                                            size: 28,
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            'درخواست ثبت شد',
+                                            style: TextStyle(
+                                              fontFamily: 'Vazir',
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      content: const Text(
+                                        'درخواست شما با موفقیت ثبت شد و در حال بررسی است. به زودی با شما تماس خواهیم گرفت.',
+                                        style: TextStyle(
+                                          fontFamily: 'Vazir',
+                                          height: 1.5,
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(dialogContext).pop();
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text(
+                                            'متوجه شدم',
+                                            style: TextStyle(
+                                              fontFamily: 'Vazir',
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
-                                Navigator.pop(context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
