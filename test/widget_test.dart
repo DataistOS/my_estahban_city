@@ -10,7 +10,7 @@ import 'package:my_estahban_city/services/pocketbase_instance.dart';
 import 'package:my_estahban_city/features/feat_auth/models/user_model.dart';
 
 class FakeAuthService extends ChangeNotifier implements AuthService {
-  bool _isLoading = false;
+  final bool _isLoading = false;
   String? _errorMessage;
   UserModel? _currentUser;
 
