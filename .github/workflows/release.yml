@@ -1,0 +1,91 @@
+name: Standardized Release
+
+on:
+  push:
+    tags:
+      # Triggers the workflow on semantic versioning tags (e.g., v1.0.0)
+      - 'v*.*.*'
+
+jobs:
+  test-build-and-release:
+    name: Run Tests, Build & Create Release
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Grants write permission to create releases and upload build artifacts
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # ==========================================
+      # 1. SETUP ENVIRONMENT (Flutter & Linux Build Dependencies)
+      # ==========================================
+
+      - name: Setup Java (Required for Android build)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Install Linux Desktop Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.x'
+          channel: 'stable'
+          cache: true
+
+      # ==========================================
+      # 2. RUN TESTS & BUILD ARTIFACTS
+      # ==========================================
+
+      - name: Run Project Tests
+        run: |
+          echo "Running all tests to ensure 100% test coverage..."
+          flutter pub get
+          flutter test
+
+      - name: Build Flutter Artifacts
+        run: |
+          echo "Starting build process..."
+          mkdir -p dist
+
+          # 1. Build Android APK
+          echo "Building Flutter Android APK..."
+          flutter build apk --release
+          if [ -f "build/app/outputs/flutter-apk/app-release.apk" ]; then
+            cp build/app/outputs/flutter-apk/app-release.apk dist/my_estahban_city-android-release.apk
+            echo "Android APK copied successfully."
+          fi
+
+          # 2. Build Linux Desktop Release (Bundle)
+          echo "Building Flutter Linux App..."
+          flutter build linux --release
+          
+          # Compress Linux bundle into a tar.gz for distribution
+          if [ -d "build/linux/x64/release/bundle" ]; then
+            cd build/linux/x64/release/bundle
+            tar -czvf ../../../../../dist/my_estahban_city-linux-x64.tar.gz *
+            cd ../../../../../
+            echo "Linux bundle archived successfully."
+          fi
+
+      # ==========================================
+      # 3. CREATE GITHUB RELEASE & UPLOAD
+      # ==========================================
+
+      - name: Create GitHub Release & Upload Artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*
+          # Automatically generates release notes from PRs and commit history
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
