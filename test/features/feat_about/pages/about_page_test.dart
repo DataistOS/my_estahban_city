@@ -27,7 +27,6 @@ void main() {
     ) async {
       await tester.pumpWidget(createTestableWidget());
 
-      // بررسی برخی از خدمات ذکر شده در لیست
       expect(find.text('سرویس‌دهی به سامانه‌‌های شهروندی'), findsOneWidget);
       expect(
         find.text('توسعه و مشارکت در سیستم‌عامل دیتائیست'),
@@ -47,7 +46,10 @@ void main() {
         final linkFinder = find.text('https://dataist.ir');
         expect(linkFinder, findsOneWidget);
 
-        await tester.tap(linkFinder);
+        await tester.scrollUntilVisible(linkFinder, 200);
+        await tester.pumpAndSettle();
+
+        await tester.tap(linkFinder, warnIfMissed: false);
         await tester.pump();
 
         expect(find.text('درباره ما'), findsWidgets);

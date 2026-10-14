@@ -9,6 +9,17 @@ void main() {
     test('fromRecord should correctly parse RecordModel into OrderModel', () {
       final recordData = {
         'id': 'order123456789',
+        'collectionId': 'pbc_orders',
+        'collectionName': 'orders',
+        'created': '2026-01-01T10:00:00.000Z',
+        'updated': '2026-01-01T11:00:00.000Z',
+        'user': 'user987654321',
+        'items': [
+          {'product_id': 'prod1', 'quantity': 2, 'price': 100000.0},
+        ],
+        'total_amount': 200000.0,
+        'shipping_address': {'city': 'Estahban'},
+        'status': 'pending',
         'data': {
           'user': 'user987654321',
           'items': [
@@ -17,8 +28,6 @@ void main() {
           'total_amount': 200000.0,
           'shipping_address': {'city': 'Estahban'},
           'status': 'pending',
-          'created': '2026-01-01 10:00:00.000Z',
-          'updated': '2026-01-01 11:00:00.000Z',
         },
       };
 
@@ -31,8 +40,8 @@ void main() {
       expect(order.totalAmount, 200000.0);
       expect(order.shippingAddress['city'], 'Estahban');
       expect(order.status, 'pending');
-      expect(order.created, DateTime.parse('2026-01-01 10:00:00.000Z'));
-      expect(order.updated, DateTime.parse('2026-01-01 11:00:00.000Z'));
+      expect(order.created, DateTime.parse('2026-01-01T10:00:00.000Z'));
+      expect(order.updated, DateTime.parse('2026-01-01T11:00:00.000Z'));
     });
   });
 }

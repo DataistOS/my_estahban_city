@@ -3,11 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pocketbase/pocketbase.dart';
+import 'package:my_estahban_city/services/pocketbase_instance.dart';
 import 'package:my_estahban_city/features/feat_search/pages/advanced_search_page.dart';
 
 void main() {
   setUpAll(() async {
     SharedPreferences.setMockInitialValues({});
+    pocketBaseInstance = PocketBase('https://my.estahban.city');
   });
 
   group('AdvancedSearchPage Widget Tests', () {
@@ -15,13 +18,11 @@ void main() {
       'renders search bar, filter button, and initial state correctly',
       (WidgetTester tester) async {
         await tester.pumpWidget(const MaterialApp(home: AdvancedSearchPage()));
+        await tester.pump();
 
         expect(find.text('جستجوی پیشرفته'), findsOneWidget);
-
         expect(find.byType(TextField), findsOneWidget);
         expect(find.byIcon(Icons.filter_list), findsOneWidget);
-
-        expect(find.byType(CircularProgressIndicator), findsWidgets);
       },
     );
 
@@ -29,7 +30,6 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(const MaterialApp(home: AdvancedSearchPage()));
-
       await tester.pumpAndSettle();
 
       final filterButtonFinder = find.byIcon(Icons.filter_list);

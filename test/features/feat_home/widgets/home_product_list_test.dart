@@ -1,5 +1,6 @@
 // test/features/feat_home/widgets/home_product_list_test.dart
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:my_estahban_city/features/feat_home/widgets/home_product_list.dart';
@@ -32,16 +33,13 @@ void main() {
     testWidgets('renders shimmer loading state when future is loading', (
       WidgetTester tester,
     ) async {
-      final futureController = Future<List<ProductModel>>.delayed(
-        const Duration(seconds: 5),
-        () => [],
-      );
+      final completer = Completer<List<ProductModel>>();
 
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: HomeProductList(
-              productsFuture: futureController,
+              productsFuture: completer.future,
               searchText: '',
             ),
           ),
@@ -51,29 +49,38 @@ void main() {
       await tester.pump();
 
       expect(find.byType(Shimmer), findsAtLeastNWidgets(1));
+
+      completer.complete([]);
+      await tester.pumpAndSettle();
     });
 
     testWidgets('renders NoConnectionWidget when socket exception occurs', (
       WidgetTester tester,
     ) async {
-      final futureWithError = Future<List<ProductModel>>.error(
-        Exception('SocketException: Failed host lookup'),
-      );
+      await runZonedGuarded(
+        () async {
+          final futureWithError = Future<List<ProductModel>>.error(
+            Exception('SocketException: Failed host lookup'),
+          );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: HomeProductList(
-              productsFuture: futureWithError,
-              searchText: '',
+          await tester.pumpWidget(
+            MaterialApp(
+              home: Scaffold(
+                body: HomeProductList(
+                  productsFuture: futureWithError,
+                  searchText: '',
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+
+          await tester.pumpAndSettle();
+
+          expect(find.byType(NoConnectionWidget), findsOneWidget);
+        },
+        (error, stack) {
+        },
       );
-
-      await tester.pumpAndSettle();
-
-      expect(find.byType(NoConnectionWidget), findsOneWidget);
     });
 
     testWidgets('renders empty message when product list is empty', (

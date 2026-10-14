@@ -110,21 +110,24 @@ void main() {
       fakeAuthService.currentUser = null;
 
       await tester.pumpWidget(
-        MaterialApp(
-          routes: {
-            '/login': (context) => const Scaffold(body: Text('Login Page')),
-          },
-          home: Scaffold(
-            drawer: AppDrawer(),
-            body: Builder(
-              builder: (context) {
-                return Center(
-                  child: ElevatedButton(
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                    child: const Text('Open Drawer'),
-                  ),
-                );
-              },
+        ChangeNotifierProvider<AuthService>.value(
+          value: fakeAuthService,
+          child: MaterialApp(
+            routes: {
+              '/login': (context) => const Scaffold(body: Text('Login Page')),
+            },
+            home: Scaffold(
+              drawer: AppDrawer(),
+              body: Builder(
+                builder: (context) {
+                  return Center(
+                    child: ElevatedButton(
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                      child: const Text('Open Drawer'),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),

@@ -11,13 +11,19 @@ void main() {
       () {
         final recordData = {
           'id': 'item123456789',
+          'collectionId': 'pbc_order_items',
+          'collectionName': 'order_items',
+          'created': '2026-01-01T10:00:00.000Z',
+          'updated': '2026-01-01T11:00:00.000Z',
+          'order': 'order987654321',
+          'product': 'prod111222333',
+          'quantity': 2,
+          'price_at_purchase': 150000.0,
           'data': {
             'order': 'order987654321',
             'product': 'prod111222333',
             'quantity': 2,
             'price_at_purchase': 150000.0,
-            'created': '2026-01-01 10:00:00.000Z',
-            'updated': '2026-01-01 11:00:00.000Z',
           },
         };
 
@@ -29,8 +35,8 @@ void main() {
         expect(orderItem.product, 'prod111222333');
         expect(orderItem.quantity, 2);
         expect(orderItem.priceAtPurchase, 150000.0);
-        expect(orderItem.created, DateTime.parse('2026-01-01 10:00:00.000Z'));
-        expect(orderItem.updated, DateTime.parse('2026-01-01 11:00:00.000Z'));
+        expect(orderItem.created, DateTime.parse('2026-01-01T10:00:00.000Z'));
+        expect(orderItem.updated, DateTime.parse('2026-01-01T11:00:00.000Z'));
       },
     );
 
@@ -41,8 +47,8 @@ void main() {
         product: 'prod111222333',
         quantity: 3,
         priceAtPurchase: 200000.0,
-        created: DateTime.parse('2026-01-01 10:00:00.000Z'),
-        updated: DateTime.parse('2026-01-01 11:00:00.000Z'),
+        created: DateTime.parse('2026-01-01T10:00:00.000Z'),
+        updated: DateTime.parse('2026-01-01T11:00:00.000Z'),
       );
 
       final map = orderItem.toRecord();

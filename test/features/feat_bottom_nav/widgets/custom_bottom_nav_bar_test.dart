@@ -8,6 +8,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:my_estahban_city/features/feat_bottom_nav/widgets/custom_bottom_nav_bar.dart';
 import 'package:my_estahban_city/services/auth_service.dart';
 import 'package:my_estahban_city/features/feat_auth/models/user_model.dart';
+import 'package:my_estahban_city/features/feat_auth/pages/profile_page.dart';
 
 class MockAuthService extends Mock implements AuthService {}
 
@@ -22,13 +23,19 @@ void main() {
     required Function(String? categoryId, String title) onCategorySelected,
   }) {
     return MaterialApp(
+      builder: (context, child) {
+        return ChangeNotifierProvider<AuthService>.value(
+          value: mockAuthService,
+          child: child ?? const SizedBox(),
+        );
+      },
       routes: {
         '/login': (context) => const Scaffold(body: Text('Login Screen Mock')),
+        '/profile': (context) => const ProfilePage(),
       },
       home: Scaffold(
-        bottomNavigationBar: ChangeNotifierProvider<AuthService>.value(
-          value: mockAuthService,
-          child: CustomBottomNavBar(onCategorySelected: onCategorySelected),
+        bottomNavigationBar: CustomBottomNavBar(
+          onCategorySelected: onCategorySelected,
         ),
       ),
     );

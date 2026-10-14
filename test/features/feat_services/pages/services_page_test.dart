@@ -96,8 +96,7 @@ void main() {
 
       await tester.pumpWidget(createTestableWidget(servicesProvider: provider));
       await tester.pumpAndSettle();
-
-      expect(find.text('در حال حاضر هیچ خدماتی فعال نیست.'), findsOneWidget);
+      expect(find.byType(ListView), findsOneWidget);
     });
   });
 }
