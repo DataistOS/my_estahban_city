@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:matomo_tracker/matomo_tracker.dart';
 
 import 'package:my_estahban_city/services/auth_service.dart';
 import 'package:my_estahban_city/services/product_service.dart';
@@ -18,6 +19,11 @@ import 'features/feat_scanner/pages/product_scanner_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializePocketBase();
+
+  await MatomoTracker.instance.initialize(
+    siteId: '4',
+    url: 'https://analytics.dataist.ir/matomo.php',
+  );
 
   const String initialRoute = '/home';
 
@@ -49,6 +55,7 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      navigatorObservers: [matomoLocalObserver, MatomoGlobalObserver()],
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Vazir',

@@ -4,7 +4,7 @@ homepage: https://my.estahban.city/
 description: "MyEstahban: Your smart companion for city services"
 issue_tracker: https://github.com/DataistOS/my_estahban_city/issues
 documentation: https://dpic.dataist.ir/heuristic/_source/category/tools/myestahbancity.html
-version: 0.9.4+1
+version: 0.9.5+1
 
 # Environment
 environment:
@@ -32,14 +32,11 @@ dependencies:
   # Indicator
   smooth_page_indicator: ^1.2.1
 
-  # Backend
-  pocketbase: ^0.23.0
-
   # StateManagement
   provider: ^6.1.5
 
   # Network
-  # Network Connectivity
+  #  Connectivity
   connectivity_plus: ^6.1.4
 
   # Web
@@ -52,7 +49,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
 
   # Formatting & Parsing
-  # Json
+  # JSON
   json_annotation: ^4.9.0
   # Intl
   intl: ^0.20.2
@@ -69,6 +66,10 @@ dependencies:
   # Cached Image Loading
   cached_network_image: ^3.4.1
 
+  # Backend & Analytics
+  pocketbase: ^0.23.0
+  matomo_tracker: ^6.1.0
+
 # Development Dependencies
 dev_dependencies:
   flutter_test:
@@ -77,7 +78,7 @@ dev_dependencies:
   build_runner: ^2.6.0
   # Linter / Code Style
   flutter_lints: ^5.0.0
-  # Json Serialization Generator
+  # JSON Serialization Generator
   json_serializable: ^6.10.0
   # Testing / Mocking
   mocktail: ^1.0.5
